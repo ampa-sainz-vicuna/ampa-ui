@@ -98,12 +98,15 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
     pasa al tema: el salto lateral al abrir un desplegable pasa en todas.
   - **Logo reducido** a 480 px de ancho (19 KB en vez de 38): nunca se pinta a
     más de 240 px. El original sigue en `assets/logo-ampa.png`.
-- **Adoptada en listados** (sin commit todavía; ver su `CLAUDE.md`).
+- **Publicada la 0.1.0** el 24/09/2026: la Action pasó en verde y la release
+  lleva `ampa-ui-0.1.0.tgz` (60 KB). El repositorio se creó privado sin querer
+  y la descarga daba 404 hasta hacerlo público.
+- **Adoptada en listados**, instalada desde la release. Comprobado también que
+  la imagen de producción de listados la instala sin esta carpeta al lado.
 
 **Pendiente, en este orden**
 
-1. **Publicar la 0.1.0** (lo hace el usuario: crear el repositorio y subir la
-   etiqueta). Comandos en el `CLAUDE.md` de listados, *Siguiente paso*.
+1. ~~Publicar la 0.1.0~~ Hecho.
 2. **Adoptarla en fichajes.** Lo que cambia respecto a listados:
    - `ConfirmDialog`: `onClose` → `onCancel` (los usos están en `admin/`).
    - `apiDownload(path, token)` devolvía un `Blob`; ahora
@@ -131,6 +134,12 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
   `git`. Por eso se instala por la URL de la release.
 - **GitHub Packages pide token incluso para instalar paquetes públicos.**
   Descartado por eso.
+- **El repositorio tiene que ser público.** Privado, la URL de la release da
+  404 a quien no lleva credenciales (Docker, Cloud Build), aunque desde el
+  navegador de quien lo creó se vea perfectamente.
+- **`docker compose exec node …` para instalar en una aplicación se lanza desde
+  la carpeta de esa aplicación**, no desde esta: aquí `node` no se queda
+  levantado y el `exec` falla.
 - **Después de cambiar el paquete en una aplicación, `docker compose restart
   node`**: Vite prepara las dependencias al arrancar y no se entera solo.
 - **Un `file:` en el `package.json` de una aplicación rompe su despliegue**:
