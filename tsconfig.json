@@ -1,0 +1,29 @@
+{
+  // Comprueba los tipos de todo, tests incluidos, sin generar nada.
+  // Lo que se publica lo genera tsconfig.build.json, que hereda de aquí.
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["google.accounts"],
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "strict": true,
+
+    // Los imports entre ficheros de la librería llevan la extensión .ts/.tsx,
+    // y al compilar se reescribe a .js. Sin extensión, el JavaScript generado
+    // solo lo entendería un empaquetador; con ella lo entiende también Node,
+    // que es quien lo carga cuando Vitest corre los tests de una aplicación.
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src", "vitest.config.ts"]
+}

@@ -1,0 +1,17 @@
+# Solo hace falta Node, y solo para ejecutar comandos: esta librería no tiene
+# pantalla propia. Se prueba con sus tests y dentro de una aplicación (ver
+# README, "Probar un cambio en una aplicación antes de publicarlo").
+#
+#   docker compose run --rm node npm ci
+#   docker compose run --rm node npm test
+
+services:
+  node:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - node_modules:/app/node_modules
+
+volumes:
+  node_modules:

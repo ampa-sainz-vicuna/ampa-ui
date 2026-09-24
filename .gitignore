@@ -1,0 +1,11 @@
+node_modules
+dist
+
+# Lo que genera "npm pack". El paquete de cada versión lo publica GitHub
+# (.github/workflows/release.yml), no se guarda en el repositorio.
+*.tgz
+
+*.log
+.idea
+.vscode/*
+.DS_Store

@@ -1,0 +1,54 @@
+# Publica una versión de @ampa/ui.
+#
+# Se dispara al subir una etiqueta vX.Y.Z (ver README, "Publicar una versión").
+# Comprueba que la etiqueta coincide con package.json, pasa lint, tipos y
+# tests, construye el paquete y lo cuelga en la release de GitHub con ese
+# nombre. Las aplicaciones lo instalan desde ahí:
+#
+#   https://github.com/ampa-sainz-vicuna/ampa-ui/releases/download/vX.Y.Z/ampa-ui-X.Y.Z.tgz
+#
+# Se hace aquí y no a mano para que lo que se instala sea exactamente lo que ha
+# pasado los tests, construido siempre de la misma forma.
+
+name: Publicar versión
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  # Para crear la release y subirle el paquete. Nada más.
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # La misma versión que la imagen node:22-alpine de desarrollo.
+          node-version: 22
+          cache: npm
+
+      - name: La etiqueta coincide con la versión de package.json
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "La etiqueta es $GITHUB_REF_NAME pero package.json dice $VERSION."
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+      # npm pack construye (prepack) y deja ampa-ui-X.Y.Z.tgz.
+      - run: npm pack
+
+      - name: Crear la release con el paquete
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" ampa-ui-*.tgz --title "$GITHUB_REF_NAME" --generate-notes
