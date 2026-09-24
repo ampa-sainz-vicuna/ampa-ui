@@ -145,19 +145,17 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    que borra la cookie. La pantalla de permisos va en el front del portal
    (hecho con esta librería), no dentro de ella. Orden: primero el portal,
    luego esta 0.2.0.
-6. **0.2.0 escrita (24/09/2026, "hazlo tú"), SIN PUBLICAR.** `SuiteApp` con
+6. **0.2.0 publicada el 24/09/2026** (release con el `.tgz`; el portal la
+   usa desde ahí). Las aplicaciones siguen en la 0.1.1 hasta adoptar el
+   portal. Lo que se hizo: `SuiteApp` con
    `portalUrl` y, solo en el portal, `google`; `storageKey`, `googleClientId`,
    `hostedDomain` y `tokenStorage` fuera; `Session` y `apiRequest` sin `token`;
    `SessionGate` según `/api/me` (200 / 401 → portal o botón de Google / 403
    "no tienes acceso" / error), `useSession` sin setState en el efecto. **36
-   tests, lint y tipos en verde**; `npm pack` bien. El portal
-   (`ampa-portal/web`) ya la usa, instalada con `file:` desde el `.tgz`
-   local: al publicarla, cambiar allí a la URL de la release. Migración de
-   cada aplicación: README, *Pasar de la 0.1 a la 0.2*. **Publicarla es
-   seguro** (las aplicaciones siguen fijadas en la 0.1.1) y hace falta ANTES
-   de desplegar el portal, que la necesita desde la release. Lo que tiene que
-   esperar al portal desplegado es **adoptarla** en una aplicación: sin portal
-   no entraría nadie.
+   tests, lint y tipos en verde**. Migración de cada aplicación: README,
+   *Pasar de la 0.1 a la 0.2*. **Adoptarla en una aplicación solo junto con
+   el cliente del portal en su servidor**: una sin la otra no deja entrar a
+   nadie. El portal ya está desplegado (ver su `CLAUDE.md`).
 
 ---
 
