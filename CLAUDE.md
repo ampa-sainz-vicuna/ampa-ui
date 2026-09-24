@@ -114,23 +114,22 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
 **Pendiente, en este orden**
 
 1. ~~Publicar la 0.1.0~~ Hecho.
-2. **Adoptarla en fichajes.** Lo que cambia respecto a listados:
-   - `ConfirmDialog`: `onClose` → `onCancel` (los usos están en `admin/`).
-   - `apiDownload(path, token)` devolvía un `Blob`; ahora
-     `apiDownload(path, { token })` devuelve `{ blob, filename }`.
-   - `App.tsx` pasa a `SessionGate<SessionUser>` con su `SessionUser`
-     (`isEmployee`, `isAdmin`) y el `Workspace` que ya tiene.
-   - Su test del 413 esperaba "el máximo son 20 MB".
-   - Ojo: fichajes tenía cambios sin commit el 24/09/2026. Mirar `git status`
-     antes de empezar.
-3. **Adoptarla en facturación**, que no tiene login todavía: `SuiteRoot`,
-   `AppShell` sin `onSignOut` (con `maxWidth="md"`), `ConfirmDialog` (pasar de
-   `message` a `children`), el cliente de la API y las fuentes, que no tenía.
-   Su `index.css` sobra: lo único que tenía (`scrollbar-gutter`) ya está en el
-   tema. Su `theme.ts` tiene además un comentario sobre cifras de ancho fijo y
-   una clase `.importe` que no existe: preguntar si se quería hacer. Cuando
-   llegue el login, `SessionGate` y listo.
-4. Después, **el back común** (las dos rutas del contrato, `POST
+2. ~~Adoptarla en fichajes~~ Hecho el 24/09/2026, ya con la **0.1.1**
+   (detalle en su `CLAUDE.md`, *Front común de la suite*). `ConfirmDialog` con
+   `onCancel`, descargas con `{ blob, filename }` y el nombre del servidor,
+   `SessionGate<SessionUser>` con sus dos roles, y la configuración en
+   `src/suiteApp.ts` (fuera de `main.tsx` para que el test de `App` la use).
+   134 tests, lint y build en verde; visto en el navegador y construida la
+   etapa de React de su `Dockerfile` sin esta carpeta al lado.
+3. ~~Adoptarla en facturación~~ Hecho el 24/09/2026, con la **0.1.1**:
+   `SuiteRoot`, `AppShell` con `maxWidth="md"` y sin `onSignOut`,
+   `ConfirmDialog` con `children`, `messageOf`/`apiRequest` y las fuentes.
+   `index.css` y el comentario de `.importe` fuera (ya se hace con `sx` en
+   `Figures.tsx`, decidido con el usuario). `googleClientId: ''` hasta que
+   tenga login; entonces, `SessionGate`. 39 tests, lint y build en verde.
+4. **Subir listados a la 0.1.1** (una línea: el `npm install` de la URL nueva
+   desde su carpeta y `docker compose restart node`).
+5. Después, **el back común** (las dos rutas del contrato, `POST
    /api/auth/google` y `GET /api/me`, son la frontera entre los dos).
 
 ---
