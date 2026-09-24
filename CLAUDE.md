@@ -14,6 +14,10 @@ fichero es el resumen para arrancar.
 Repositorio **público** (el porqué, en el README):
 `https://github.com/ampa-sainz-vicuna/ampa-ui`. Después de cada commit, `git push`.
 
+**Siguiente paso de la suite: el back común** (con los permisos dentro). Si
+se pide "sigue con el back común", el encargo está en la
+[hoja de ruta, sección 4a](../ampa-fichajes/docs/hoja-de-ruta.md).
+
 ---
 
 ## Cómo trabajar con el usuario
@@ -127,10 +131,17 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    `index.css` y el comentario de `.importe` fuera (ya se hace con `sx` en
    `Figures.tsx`, decidido con el usuario). `googleClientId: ''` hasta que
    tenga login; entonces, `SessionGate`. 39 tests, lint y build en verde.
-4. **Subir listados a la 0.1.1** (una línea: el `npm install` de la URL nueva
-   desde su carpeta y `docker compose restart node`).
-5. Después, **el back común** (las dos rutas del contrato, `POST
-   /api/auth/google` y `GET /api/me`, son la frontera entre los dos).
+4. ~~Subir listados a la 0.1.1~~ Hecho el 24/09/2026 (29 tests, lint y build
+   en verde). **Las tres aplicaciones están en la 0.1.1.**
+5. **Siguiente: el back común**, que no es de este repositorio. El encargo
+   entero (qué es, de dónde se parte en cada aplicación, qué está decidido y
+   qué hay que preguntar) está en la
+   [hoja de ruta de la suite, sección 4a](../ampa-fichajes/docs/hoja-de-ruta.md).
+   Decidido: **los permisos (usuario × aplicación × rol) van en el back
+   común**. Lo que toca a esta librería: las dos rutas del contrato, `POST
+   /api/auth/google` y `GET /api/me`, son la frontera entre los dos; si el
+   back común las cambia, sube la segunda cifra de aquí. Y si hace falta una
+   pantalla de permisos, decidir si su parte de front vive aquí.
 
 ---
 
