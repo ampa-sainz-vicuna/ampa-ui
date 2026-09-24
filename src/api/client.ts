@@ -111,13 +111,24 @@ async function send(path: string, options: RequestOptions, accept: string): Prom
 }
 
 /**
- * Saca el nombre de la cabecera `Content-Disposition`, que llega así:
- * `attachment; filename="Listados 2026-09 (22-09-2026 20h15).xlsx"`.
+ * Saca el nombre de la cabecera `Content-Disposition`. Llega de dos formas:
+ *
+ *     attachment; filename="Listados 2026-09 (22-09-2026 20h15).xlsx"
+ *     attachment; filename=N_mina.pdf; filename*=utf-8''N%C3%B3mina.pdf
+ *
+ * La segunda es la de Symfony cuando el nombre lleva acentos: `filename` es
+ * una copia en ASCII para navegadores antiguos y `filename*`, el nombre de
+ * verdad. Por eso se busca primero `filename*`.
  */
 function filenameFrom(header: string | null): string | null {
-  const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(header ?? '')
+  const encoded = /filename\*=(?:UTF-8'')?"?([^";]+)"?/i.exec(header ?? '')
+  if (encoded) {
+    return decodeURIComponent(encoded[1])
+  }
 
-  return match ? decodeURIComponent(match[1]) : null
+  const plain = /filename="?([^";]+)"?/i.exec(header ?? '')
+
+  return plain ? plain[1] : null
 }
 
 /**

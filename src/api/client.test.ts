@@ -107,6 +107,22 @@ describe('apiDownload', () => {
     expect(file.filename).toBe('Cuadrante de agosto.pdf')
   })
 
+  it('con las dos formas (la de Symfony), se queda con la de los acentos y no con la copia en ASCII', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response('%PDF', {
+          status: 200,
+          headers: { 'Content-Disposition': "attachment; filename=N_mina.pdf; filename*=utf-8''N%C3%B3mina.pdf" },
+        }),
+      ),
+    )
+
+    const file = await apiDownload('/api/me/documents/1/file')
+
+    expect(file.filename).toBe('Nómina.pdf')
+  })
+
   it('si el servidor no dice el nombre, usa el que se le pasa', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('PK', { status: 200 })))
 

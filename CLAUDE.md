@@ -103,6 +103,13 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
   y la descarga daba 404 hasta hacerlo público.
 - **Adoptada en listados**, instalada desde la release. Comprobado también que
   la imagen de producción de listados la instala sin esta carpeta al lado.
+- **0.1.1** (24/09/2026, al adoptarla en fichajes): dos arreglos que salieron
+  al comparar con la copia de fichajes. `apiDownload` se quedaba con el
+  `filename` en ASCII que Symfony pone para navegadores antiguos
+  ("N_mina.pdf") en vez de `filename*` ("Nómina.pdf"); y `saveFile` liberaba
+  el blob en el acto, y algunos navegadores cortan así la descarga (fichajes
+  esperaba 60 s). Listados sigue en la 0.1.0: sus nombres son ASCII y no le
+  afecta lo primero, pero conviene subirla.
 
 **Pendiente, en este orden**
 

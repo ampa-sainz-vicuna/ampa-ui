@@ -18,6 +18,8 @@ export function saveFile({ blob, filename }: DownloadedFile): void {
   link.click()
   link.remove()
 
-  // Sin esto el blob se queda en memoria hasta que se recargue la página.
-  URL.revokeObjectURL(url)
+  // Sin esto el blob se queda en memoria hasta que se recargue la página. Pero
+  // no en el acto: algunos navegadores empiezan a guardar después del clic y,
+  // si el blob ya no existe, cortan la descarga. Venía así de fichajes.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000)
 }
