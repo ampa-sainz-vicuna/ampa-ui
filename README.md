@@ -19,29 +19,29 @@ repositorio y tira de esta librería fijando una versión.
 
 | | |
 |---|---|
-| `SuiteRoot` | Envuelve la aplicación en su `main.tsx`: tema, normalización de estilos y sesión. Recibe el `SuiteApp` (nombre, clave del navegador, cliente de Google y dominio). |
-| `SessionGate` | La puerta: sin sesión, la pantalla de entrada; con sesión, pregunta `GET /api/me` y le pasa a la aplicación `{ user, token, onUnauthorized, signOut }`. Es lo que fichajes y listados tenían copiado en su `App.tsx`. |
+| `SuiteRoot` | Envuelve la aplicación en su `main.tsx`: tema, normalización de estilos y sesión. Recibe el `SuiteApp` (nombre, dirección del portal y, solo en el portal, el cliente de Google). |
+| `SessionGate` | La puerta: pregunta `GET /api/me` y, con sesión, le pasa a la aplicación `{ user, onUnauthorized, signOut }`; sin ella, al portal a entrar (o, en el portal, el botón de Google). Tabla completa en *Pasar de la 0.1 a la 0.2*. |
 | `AppShell` | La barra: logo, nombre de la aplicación, quién ha entrado, botón de salir y pestañas opcionales. `maxWidth` para las pantallas de tablas. |
 | `ConfirmDialog` | Preguntar antes de lo que no se deshace. Junta las tres versiones que había. |
-| `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: token, JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. |
+| `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |
 | `useAuth`, `useSuiteApp` | Para lo raro; lo normal es no necesitarlos. |
 
 ### El contrato con el servidor
 
-Toda aplicación que use `SessionGate` tiene que tener estas dos rutas, que son
-las que ya tienen fichajes y listados:
+Desde la 0.2.0, toda aplicación que use `SessionGate` tiene estas rutas, y se
+las pone el cliente del portal (`ampa-portal/cliente`), no la aplicación:
 
-- `POST /api/auth/google` con `{ credential }` → `{ token, user }`. Canjea la
-  credencial de Google por el JWT propio de la aplicación.
-- `GET /api/me` con `Authorization: Bearer …` → `{ name, email, … }`. Quién ha
+- `GET /api/me` → `{ name, email, … }`, con la cookie de la suite. Quién ha
   entrado y, si la aplicación lo necesita, qué puede hacer (fichajes añade
   `isEmployee` e `isAdmin`: `SessionGate<SessionUser & { isAdmin: boolean }>`).
+  401 sin sesión, 403 sin acceso a esta aplicación.
+- `POST /api/auth/salir` → borra la cookie.
 
-Cuando exista el back común, estas dos rutas serán suyas. Y el día que llegue
-el portal del AMPA (hoja de ruta de fichajes, punto 4), lo que cambia es
-`AuthProvider` de esta librería, no las aplicaciones.
+`POST /api/auth/google` con `{ credential }` solo existe en el portal: canjea
+la credencial de Google por la cookie. (Hasta la 0.1, cada aplicación tenía
+esa ruta y devolvía un token que se guardaba en el navegador.)
 
 ### Lo que se ha dejado fuera, a propósito
 
@@ -113,9 +113,8 @@ import { SuiteRoot, type SuiteApp } from '@ampa/ui'
 
 const app: SuiteApp = {
   name: 'Listados del AMPA',
-  storageKey: 'ampa-listados',
-  googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-  hostedDomain: import.meta.env.VITE_GOOGLE_HOSTED_DOMAIN,
+  // Donde se entra. En desarrollo, http://localhost:5176 (el portal levantado).
+  portalUrl: import.meta.env.VITE_PORTAL_URL,
 }
 
 createRoot(document.getElementById('root')!).render(
@@ -134,7 +133,7 @@ export default function App() {
   return <SessionGate>{(session) => <Workspace {...session} />}</SessionGate>
 }
 
-function Workspace({ user, token, onUnauthorized, signOut }: Session<SessionUser>) {
+function Workspace({ user, onUnauthorized, signOut }: Session<SessionUser>) {
   return (
     <AppShell userName={user.name} onSignOut={signOut} tabs={…}>
       …
@@ -147,7 +146,40 @@ La aplicación necesita, además de `@ampa/ui`: `react`, `react-dom`,
 `@mui/material`, `@mui/icons-material`, `@emotion/react`, `@emotion/styled` y
 `@fontsource/roboto`. Ya no necesita `@types/google.accounts`.
 
-Listados es el ejemplo completo.
+Listados es el ejemplo completo (en la 0.1; pasará a la 0.2 al adoptar el
+portal). El portal (`ampa-portal/web`) es el único que lleva `google` en su
+`SuiteApp`.
+
+### Pasar de la 0.1 a la 0.2 (el portal del AMPA)
+
+Desde la 0.2.0 se entra en **el portal** y la sesión es **una cookie de toda
+la suite** que el JavaScript no ve (diseño en la
+[hoja de ruta, 4a](../ampa-fichajes/docs/hoja-de-ruta.md)). Solo tiene sentido
+cuando el servidor de la aplicación ya usa el cliente del portal
+(`ampa-portal/cliente`): las dos cosas van juntas. En cada aplicación:
+
+1. **`SuiteApp`**: fuera `storageKey`, `googleClientId` y `hostedDomain`;
+   dentro `portalUrl`. En `web/.env`, `VITE_PORTAL_URL=http://localhost:5176`
+   (y en producción `https://portal.ampasainzvicuna.com`); fuera
+   `VITE_GOOGLE_CLIENT_ID` y `VITE_GOOGLE_HOSTED_DOMAIN`.
+2. **Fuera el `token`**: ya no viene en `Session` ni se pasa a `apiRequest` /
+   `apiDownload`. TypeScript señala cada sitio; es borrarlo, y borrarlo de las
+   props por las que viajaba.
+3. **Tests**: nada de `sessionStorage['….token']` ni de `fakeJwt`. Con sesión
+   es que `GET /api/me` conteste 200; sin sesión, que conteste 401 (y entonces
+   `SessionGate` manda al portal: el test lo ve como un enlace "Entrar en el
+   portal del AMPA").
+
+Lo que hace `SessionGate` desde la 0.2.0, según lo que conteste `GET /api/me`:
+
+| | en una aplicación | en el portal |
+|---|---|---|
+| 200 | la aplicación | lo mismo |
+| 401 | al portal, con `?volver=` para que la devuelva aquí | el botón de Google |
+| 403 | "no tienes acceso", con el camino al portal | lo mismo |
+| otro | la barra con el error y "Reintentar" | lo mismo |
+
+Salir (`POST /api/auth/salir`) borra la cookie: sale de **toda** la suite.
 
 ---
 

@@ -5,6 +5,10 @@
  * mismo contenedor y del mismo dominio, y en desarrollo Vite reenvía `/api` a
  * nginx. Para el navegador siempre es el mismo origen, así que no hay CORS ni
  * dirección de la API que configurar.
+ *
+ * La sesión no se manda a mano: es la cookie de la suite, que el navegador
+ * añade solo a cada llamada del mismo origen (desde la 0.2.0; antes era un
+ * `Authorization: Bearer` con el token guardado en el navegador).
  */
 
 /**
@@ -29,7 +33,6 @@ export class ApiError extends Error {
 
 export interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  token?: string
   /** Un objeto se manda como JSON; un FormData, como formulario con ficheros. */
   body?: unknown
 }
@@ -87,9 +90,6 @@ export function messageOf(failure: unknown): string {
 
 async function send(path: string, options: RequestOptions, accept: string): Promise<Response> {
   const headers: Record<string, string> = { Accept: accept }
-  if (options.token) {
-    headers.Authorization = `Bearer ${options.token}`
-  }
 
   // Con FormData el Content-Type lo pone el navegador, porque incluye el
   // separador entre las partes del formulario. Si lo pusiéramos nosotros
@@ -102,6 +102,9 @@ async function send(path: string, options: RequestOptions, accept: string): Prom
   try {
     return await fetch(path, {
       method: options.method ?? 'GET',
+      // Es lo que hace fetch por defecto; se escribe para que se vea que la
+      // cookie de sesión va, y solo a nuestro propio origen.
+      credentials: 'same-origin',
       headers,
       body: options.body === undefined ? undefined : isForm ? (options.body as FormData) : JSON.stringify(options.body),
     })

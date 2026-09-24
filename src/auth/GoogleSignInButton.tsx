@@ -58,7 +58,10 @@ interface Props {
 }
 
 export function GoogleSignInButton({ onCredential }: Props) {
-  const { googleClientId, hostedDomain } = useSuiteApp()
+  // Solo lo pinta LoginPage, que solo sale en el portal (con `google`).
+  const { google: config } = useSuiteApp()
+  const googleClientId = config?.clientId ?? ''
+  const hostedDomain = config?.hostedDomain
   const container = useRef<HTMLDivElement>(null)
   const [loadFailed, setLoadFailed] = useState(false)
 

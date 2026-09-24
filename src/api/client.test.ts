@@ -3,16 +3,18 @@ import { jsonResponse } from '../test/fixtures.tsx'
 import { ApiError, apiDownload, apiRequest, messageOf } from './client.ts'
 
 describe('apiRequest', () => {
-  it('manda el token en la cabecera Authorization y ningún cuerpo en un GET', async () => {
+  it('la sesión va en la cookie, solo al propio origen, y un GET no lleva cuerpo', async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse(200, { ok: true }))
     vi.stubGlobal('fetch', fetchMock)
 
-    await apiRequest('/api/me', { token: 'abc' })
+    await apiRequest('/api/me')
 
     const [url, init] = fetchMock.mock.calls[0]
     expect(url).toBe('/api/me')
     expect(init.method).toBe('GET')
-    expect(init.headers.Authorization).toBe('Bearer abc')
+    expect(init.credentials).toBe('same-origin')
+    // Desde la 0.2.0 no hay token en el navegador que mandar a mano.
+    expect(init.headers.Authorization).toBeUndefined()
     expect(init.body).toBeUndefined()
   })
 
@@ -33,7 +35,7 @@ describe('apiRequest', () => {
     const form = new FormData()
     form.append('title', 'Contrato')
 
-    await apiRequest('/api/documents', { method: 'POST', token: 'abc', body: form })
+    await apiRequest('/api/documents', { method: 'POST', body: form })
 
     const [, init] = fetchMock.mock.calls[0]
     expect(init.body).toBe(form)
@@ -84,11 +86,11 @@ describe('apiDownload', () => {
     )
     vi.stubGlobal('fetch', fetchMock)
 
-    const file = await apiDownload('/api/listings/file', { method: 'POST', token: 'abc' })
+    const file = await apiDownload('/api/listings/file', { method: 'POST' })
 
     expect(await file.blob.text()).toBe('PK')
     expect(file.filename).toBe('Listados 2026-09 (22-09-2026 20h15).xlsx')
-    expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer abc')
+    expect(fetchMock.mock.calls[0][1].credentials).toBe('same-origin')
   })
 
   it('entiende el nombre codificado (filename*), que es como llegan los acentos', async () => {
@@ -134,7 +136,7 @@ describe('apiDownload', () => {
   it('si falla, lanza el mensaje del servidor', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(503, { error: 'Drive no responde.' })))
 
-    await expect(apiDownload('/api/documents/1/file', { token: 'abc' })).rejects.toMatchObject({
+    await expect(apiDownload('/api/documents/1/file')).rejects.toMatchObject({
       status: 503,
       message: 'Drive no responde.',
     })

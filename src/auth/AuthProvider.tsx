@@ -1,53 +1,53 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { apiRequest } from '../api/client.ts'
-import { useSuiteApp } from '../app/suiteApp.ts'
-import { AuthContext, type AuthResponse, type AuthState } from './authContext.ts'
-import { clearToken, loadToken, saveToken } from './tokenStorage.ts'
+import { AuthContext, type AuthState } from './authContext.ts'
 
 /**
- * La sesión: el token propio de la aplicación y cómo se consigue.
+ * La sesión de la suite: entrar (solo en el portal), salir y "ha caducado".
  *
- * Todas las aplicaciones de la suite canjean la credencial de Google en la
- * misma ruta, `POST /api/auth/google`, y reciben `{ token, user }`. Ese es el
- * contrato con el servidor; el día que exista el portal del AMPA, cambia aquí
- * y en ningún otro sitio.
+ * El token vive en una cookie que pone el portal para todo el dominio del
+ * AMPA; el navegador la manda sola en cada llamada a `/api` y el JavaScript
+ * no la ve. Aquí solo se lleva la cuenta de cuándo hay que volver a preguntar
+ * al servidor quién soy (`epoch`), y eso lo hace SessionGate.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { storageKey } = useSuiteApp()
-  const tokenKey = `${storageKey}.token`
-
-  // Función en useState: se lee sessionStorage una sola vez, al arrancar.
-  const [token, setToken] = useState<string | null>(() => loadToken(tokenKey))
+  const [epoch, setEpoch] = useState(0)
   const [notice, setNotice] = useState<string | null>(null)
+  const [signedOut, setSignedOut] = useState(false)
 
-  const signIn = useCallback(
-    async (googleCredential: string) => {
-      const { token: appToken } = await apiRequest<AuthResponse>('/api/auth/google', {
-        method: 'POST',
-        body: { credential: googleCredential },
-      })
-      saveToken(tokenKey, appToken)
-      setNotice(null)
-      setToken(appToken)
-    },
-    [tokenKey],
+  const signIn = useCallback(async (googleCredential: string) => {
+    await apiRequest('/api/auth/google', { method: 'POST', body: { credential: googleCredential } })
+    setNotice(null)
+    setSignedOut(false)
+    setEpoch((n) => n + 1)
+  }, [])
+
+  const signOut = useCallback(async (reason?: string) => {
+    try {
+      await apiRequest('/api/auth/salir', { method: 'POST' })
+    } catch {
+      // Sin red no se puede borrar la cookie; al volver a preguntar quién soy
+      // se verá si sigue dentro, y no hay nada mejor que hacer aquí.
+    }
+    // Evita que Google vuelva a entrar solo con la misma cuenta sin preguntar.
+    // "google" solo existe si llegó a cargarse el script de Google (el portal).
+    if (typeof google !== 'undefined') {
+      google.accounts.id.disableAutoSelect()
+    }
+    setNotice(reason ?? null)
+    setSignedOut(true)
+    setEpoch((n) => n + 1)
+  }, [])
+
+  const expire = useCallback(() => {
+    setNotice('Tu sesión ha caducado. Vuelve a entrar.')
+    setEpoch((n) => n + 1)
+  }, [])
+
+  const value = useMemo<AuthState>(
+    () => ({ epoch, notice, signedOut, signIn, signOut, expire }),
+    [epoch, notice, signedOut, signIn, signOut, expire],
   )
-
-  const signOut = useCallback(
-    (reason?: string) => {
-      clearToken(tokenKey)
-      // Evita que Google vuelva a entrar solo con la misma cuenta sin preguntar.
-      // "google" solo existe si llegó a cargarse el script de Google.
-      if (typeof google !== 'undefined') {
-        google.accounts.id.disableAutoSelect()
-      }
-      setNotice(reason ?? null)
-      setToken(null)
-    },
-    [tokenKey],
-  )
-
-  const value = useMemo<AuthState>(() => ({ token, notice, signIn, signOut }), [token, notice, signIn, signOut])
 
   return <AuthContext value={value}>{children}</AuthContext>
 }

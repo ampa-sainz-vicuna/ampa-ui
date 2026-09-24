@@ -3,21 +3,23 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useCallback, type ReactNode } from 'react'
+import { useSuiteApp } from '../app/suiteApp.ts'
 import { AppShell } from '../shell/AppShell.tsx'
 import { useAuth, type SessionUser } from './authContext.ts'
 import { LoginPage } from './LoginPage.tsx'
+import { NoAccessPage } from './NoAccessPage.tsx'
+import { SignInAtPortal } from './SignInAtPortal.tsx'
 import { useSession } from './useSession.ts'
 
 /** Lo que recibe la aplicación una vez se sabe quién ha entrado. */
 export interface Session<U extends SessionUser> {
   user: U
-  token: string
   /**
-   * Para cuando una llamada devuelve 401: vuelve a la pantalla de entrada
-   * avisando de que la sesión ha caducado.
+   * Para cuando una llamada devuelve 401: la sesión ha caducado o ya no vale.
+   * Vuelve a preguntar quién soy y, sin sesión, lleva a entrar.
    */
   onUnauthorized: () => void
-  /** El botón de salir. */
+  /** El botón de salir. Sale de toda la suite: la sesión es una sola. */
   signOut: () => void
 }
 
@@ -26,65 +28,60 @@ interface Props<U extends SessionUser> {
 }
 
 /**
- * La puerta de cualquier aplicación de la suite: sin sesión, la pantalla de
- * entrada; con sesión, pregunta al servidor quién es y hasta que contesta
- * enseña la barra y un indicador de carga (o el error, con "Reintentar").
- * Solo cuando lo sabe le pasa el control a la aplicación.
+ * La puerta de cualquier aplicación de la suite. Pregunta al servidor quién
+ * soy (`GET /api/me`, con la cookie de la suite, que el navegador manda solo)
+ * y, según lo que conteste:
  *
- * Es lo que fichajes y listados tenían copiado en su App.tsx casi letra a letra.
+ * - quién es → le pasa el control a la aplicación;
+ * - 401 (sin sesión) → en el portal, el botón de Google; en cualquier otra
+ *   aplicación, al portal a entrar, y el portal la devuelve aquí;
+ * - 403 (sin acceso a esta aplicación) → lo dice, con el camino al portal;
+ * - otro error → la barra con el error y "Reintentar".
  *
  *     <SessionGate<SessionUser>>
- *       {({ user, token, onUnauthorized, signOut }) => <Workspace … />}
+ *       {({ user, onUnauthorized, signOut }) => <Workspace … />}
  *     </SessionGate>
  */
 export function SessionGate<U extends SessionUser = SessionUser>({ children }: Props<U>) {
-  const { token, signOut } = useAuth()
+  const { google } = useSuiteApp()
+  const { epoch, signedOut, signOut, expire } = useAuth()
+  const session = useSession<U>(epoch)
 
-  const handleUnauthorized = useCallback(() => signOut('Tu sesión ha caducado. Vuelve a entrar.'), [signOut])
-  const handleSignOut = useCallback(() => signOut(), [signOut])
+  const handleSignOut = useCallback(() => void signOut(), [signOut])
 
-  if (token === null) {
-    return <LoginPage />
-  }
+  switch (session.kind) {
+    case 'ready':
+      return children({ user: session.user, onUnauthorized: expire, signOut: handleSignOut })
 
-  return (
-    <SignedIn<U> token={token} onUnauthorized={handleUnauthorized} onSignOut={handleSignOut}>
-      {children}
-    </SignedIn>
-  )
-}
+    case 'signedOut':
+      return google ? <LoginPage /> : <SignInAtPortal afterSignOut={signedOut} />
 
-interface SignedInProps<U extends SessionUser> extends Props<U> {
-  token: string
-  onUnauthorized: () => void
-  onSignOut: () => void
-}
+    case 'forbidden':
+      return <NoAccessPage message={session.message} onSignOut={handleSignOut} />
 
-function SignedIn<U extends SessionUser>({ token, onUnauthorized, onSignOut, children }: SignedInProps<U>) {
-  const { user, error, retry } = useSession<U>(token, onUnauthorized)
-
-  if (user === null) {
-    return (
-      <AppShell onSignOut={onSignOut}>
-        {error ? (
+    case 'error':
+      return (
+        <AppShell onSignOut={handleSignOut}>
           <Alert
             severity="error"
             action={
-              <Button color="inherit" size="small" onClick={retry}>
+              <Button color="inherit" size="small" onClick={session.retry}>
                 Reintentar
               </Button>
             }
           >
-            {error}
+            {session.message}
           </Alert>
-        ) : (
+        </AppShell>
+      )
+
+    case 'loading':
+      return (
+        <AppShell>
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
             <CircularProgress aria-label="Cargando" />
           </Box>
-        )}
-      </AppShell>
-    )
+        </AppShell>
+      )
   }
-
-  return children({ user, token, onUnauthorized, signOut: onSignOut })
 }

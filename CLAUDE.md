@@ -133,15 +133,31 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    tenga login; entonces, `SessionGate`. 39 tests, lint y build en verde.
 4. ~~Subir listados a la 0.1.1~~ Hecho el 24/09/2026 (29 tests, lint y build
    en verde). **Las tres aplicaciones están en la 0.1.1.**
-5. **Siguiente: el back común**, que no es de este repositorio. El encargo
-   entero (qué es, de dónde se parte en cada aplicación, qué está decidido y
-   qué hay que preguntar) está en la
-   [hoja de ruta de la suite, sección 4a](../ampa-fichajes/docs/hoja-de-ruta.md).
-   Decidido: **los permisos (usuario × aplicación × rol) van en el back
-   común**. Lo que toca a esta librería: las dos rutas del contrato, `POST
-   /api/auth/google` y `GET /api/me`, son la frontera entre los dos; si el
-   back común las cambia, sube la segunda cifra de aquí. Y si hace falta una
-   pantalla de permisos, decidir si su parte de front vive aquí.
+5. **Siguiente: el back común**, que no es de este repositorio. **Diseño
+   decidido el 24/09/2026**, entero en la
+   [hoja de ruta de la suite, sección 4a](../ampa-fichajes/docs/hoja-de-ruta.md):
+   el back común es **el portal** (`ampa-portal`, servicio aparte y único dueño
+   de los permisos), con **un token para toda la suite en una cookie** de
+   `.ampasainzvicuna.com`. Lo que toca a esta librería, **0.2.0** (cambia el
+   contrato, hay que tocar las tres aplicaciones): `SessionGate` ya no pinta el
+   botón de Google sino que manda al portal con `?volver=…` si `/api/me` da
+   401; el cliente deja de mandar `Authorization: Bearer`; salir es una llamada
+   que borra la cookie. La pantalla de permisos va en el front del portal
+   (hecho con esta librería), no dentro de ella. Orden: primero el portal,
+   luego esta 0.2.0.
+6. **0.2.0 escrita (24/09/2026, "hazlo tú"), SIN PUBLICAR.** `SuiteApp` con
+   `portalUrl` y, solo en el portal, `google`; `storageKey`, `googleClientId`,
+   `hostedDomain` y `tokenStorage` fuera; `Session` y `apiRequest` sin `token`;
+   `SessionGate` según `/api/me` (200 / 401 → portal o botón de Google / 403
+   "no tienes acceso" / error), `useSession` sin setState en el efecto. **36
+   tests, lint y tipos en verde**; `npm pack` bien. El portal
+   (`ampa-portal/web`) ya la usa, instalada con `file:` desde el `.tgz`
+   local: al publicarla, cambiar allí a la URL de la release. Migración de
+   cada aplicación: README, *Pasar de la 0.1 a la 0.2*. **Publicarla es
+   seguro** (las aplicaciones siguen fijadas en la 0.1.1) y hace falta ANTES
+   de desplegar el portal, que la necesita desde la release. Lo que tiene que
+   esperar al portal desplegado es **adoptarla** en una aplicación: sin portal
+   no entraría nadie.
 
 ---
 

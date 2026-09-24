@@ -5,23 +5,29 @@ import { createContext, useContext } from 'react'
  * demás (colores, cabecera, cómo se entra) es igual en todas.
  */
 export interface SuiteApp {
-  /** Cómo la llama quien la usa: "Listados del AMPA". Sale en la barra y al entrar. */
+  /** Cómo la llama quien la usa: "Listados del AMPA". Sale en la barra y en los avisos. */
   name: string
   /**
-   * Prefijo de lo que se guarda en el navegador: con "ampa-listados", el token
-   * queda en `sessionStorage['ampa-listados.token']`. Cada aplicación está en
-   * su propio subdominio y no chocarían, pero con el nombre se sabe de quién es
-   * cada cosa al mirarlo en las herramientas del navegador.
+   * Dónde está el portal del AMPA, que es donde se entra (con Google) para
+   * toda la suite. A quien llega sin sesión se le manda allí. En producción,
+   * `https://portal.ampasainzvicuna.com`; en desarrollo, el Vite del portal
+   * (`http://localhost:5176`).
    */
-  storageKey: string
-  /** ID de cliente OAuth de Google. Es público por diseño: el navegador lo necesita para pintar el botón. */
-  googleClientId: string
+  portalUrl: string
   /**
-   * Solo una pista para que Google ofrezca las cuentas del AMPA; quien lo
-   * impone es el servidor. Sin él, se ofrece cualquier cuenta de Google (es lo
-   * que necesita tareas, donde entran los vocales con su cuenta personal).
+   * Solo el propio portal: aquí se entra con Google. Con esto, `SessionGate`
+   * pinta el botón de Google en vez de mandar al portal.
    */
-  hostedDomain?: string
+  google?: {
+    /** ID de cliente OAuth de Google. Es público por diseño: el navegador lo necesita para pintar el botón. */
+    clientId: string
+    /**
+     * Solo una pista para que Google ofrezca las cuentas del AMPA; quien lo
+     * impone es el servidor. Sin él, se ofrece cualquier cuenta de Google (es
+     * lo que necesitará tareas, donde entran los vocales con su cuenta personal).
+     */
+    hostedDomain?: string
+  }
 }
 
 export const SuiteAppContext = createContext<SuiteApp | null>(null)
