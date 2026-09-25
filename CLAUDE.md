@@ -157,6 +157,8 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    *Pasar de la 0.1 a la 0.2*. **Adoptarla en una aplicación solo junto con
    el cliente del portal en su servidor**: una sin la otra no deja entrar a
    nadie. El portal ya está desplegado (ver su `CLAUDE.md`).
+7. **Las tres aplicaciones están en la 0.2.0** (25/09/2026): facturación,
+   desplegada; listados y fichajes, en el código, pendientes de desplegar.
 
 ---
 
