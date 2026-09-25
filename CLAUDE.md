@@ -96,7 +96,8 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
     color primario: el rojo `error` de facturación y el rojo del AMPA casi no
     se distinguen.
   - **`AppShell`**: el botón de salir solo sale si se pasa `onSignOut`, para
-    que facturación, que aún no tiene login, pueda usarlo ya. `maxWidth`
+    que facturación, que entonces no tenía login, pudiera usarlo ya (entra
+    por el portal desde el 25/09/2026). `maxWidth`
     porque fichajes es de móvil (`sm`) y facturación de tablas (`md`).
   - **`scrollbar-gutter: stable`**, que facturación tenía en su `index.css`,
     pasa al tema: el salto lateral al abrir un desplegable pasa en todas.
