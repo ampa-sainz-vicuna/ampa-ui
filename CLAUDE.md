@@ -14,9 +14,10 @@ fichero es el resumen para arrancar.
 Repositorio **público** (el porqué, en el README):
 `https://github.com/ampa-sainz-vicuna/ampa-ui`. Después de cada commit, `git push`.
 
-**Siguiente paso de la suite: el back común** (con los permisos dentro). Si
-se pide "sigue con el back común", el encargo está en la
-[hoja de ruta, sección 4a](../ampa-fichajes/docs/hoja-de-ruta.md).
+El back común ya existe: es el [portal](../ampa-portal/CLAUDE.md), en
+producción desde el 24/09/2026 (diseño en la
+[hoja de ruta, sección 4a](../ampa-fichajes/docs/hoja-de-ruta.md)). Lo
+siguiente aquí, en *Estado*, punto 8.
 
 ---
 
@@ -157,8 +158,17 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    *Pasar de la 0.1 a la 0.2*. **Adoptarla en una aplicación solo junto con
    el cliente del portal en su servidor**: una sin la otra no deja entrar a
    nadie. El portal ya está desplegado (ver su `CLAUDE.md`).
-7. **Las tres aplicaciones están en la 0.2.0** (25/09/2026): facturación,
-   desplegada; listados y fichajes, en el código, pendientes de desplegar.
+7. **Las tres aplicaciones están en la 0.2.0 y desplegadas** (25/09/2026), y
+   tareas (sin desplegar) también la usa. El usuario comprobó ese día que la
+   sesión viaja entre aplicaciones.
+8. **Siguiente: saltar entre aplicaciones desde la barra** (pedido por el
+   usuario el 25/09/2026: hoy no hay forma de volver al portal ni de pasar a
+   otra aplicación). `AppShell` pinta un botón con las aplicaciones de esa
+   persona y "Portal" (la dirección ya la tiene: `SuiteApp.portalUrl`). La
+   lista sale de `/api/me` (`applications`), que tiene que añadir antes el
+   cliente del portal (ver el `CLAUDE.md` del portal, pendiente 5). Si
+   `/api/me` no la trae, al menos el enlace al portal: así la versión nueva
+   solo añade (0.2.1) y ninguna aplicación tiene que cambiar su código.
 
 ---
 
