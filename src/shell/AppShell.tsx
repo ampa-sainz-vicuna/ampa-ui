@@ -28,14 +28,20 @@ interface Props {
 /**
  * El marco de todas las pantallas con sesión: barra superior con el logo, el
  * nombre de la aplicación, quién ha entrado y el botón de salir. Barra blanca,
- * como las de Material 3: el color va en el contenido, no en la barra.
+ * como las de Material 3: el color va en el contenido, no en la barra. Solo
+ * una franja fina con el rojo del AMPA arriba, para que se reconozca la casa.
  */
 export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children }: Props) {
   const { name } = useSuiteApp()
 
   return (
     <>
-      <AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <AppBar
+        position="sticky"
+        color="inherit"
+        elevation={0}
+        sx={{ borderTop: 3, borderTopColor: 'primary.main', borderBottom: 1, borderBottomColor: 'divider' }}
+      >
         <Toolbar sx={{ gap: 1.5 }}>
           <Box component="img" src={AMPA_LOGO} alt="AMPA" sx={{ height: 36, width: 'auto' }} />
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>

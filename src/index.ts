@@ -17,6 +17,7 @@ export { SessionGate, type Session } from './auth/SessionGate.tsx'
 
 // El marco y los diálogos
 export { AppShell } from './shell/AppShell.tsx'
+export { CardTitle } from './shell/CardTitle.tsx'
 export { ConfirmDialog } from './shell/ConfirmDialog.tsx'
 
 // La API

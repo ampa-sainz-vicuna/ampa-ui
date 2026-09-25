@@ -23,6 +23,7 @@ repositorio y tira de esta librería fijando una versión.
 | `SessionGate` | La puerta: pregunta `GET /api/me` y, con sesión, le pasa a la aplicación `{ user, onUnauthorized, signOut }`; sin ella, al portal a entrar (o, en el portal, el botón de Google). Tabla completa en *Pasar de la 0.1 a la 0.2*. |
 | `AppShell` | La barra: logo, nombre de la aplicación, quién ha entrado, botón de salir y pestañas opcionales. `maxWidth` para las pantallas de tablas. |
 | `ConfirmDialog` | Preguntar antes de lo que no se deshace. Junta las tres versiones que había. |
+| `CardTitle` | La cabecera de una tarjeta: el icono en un círculo de color, el título (un `h2`), una línea opcional debajo y una acción a la derecha. Desde la 0.2.1, para que todas las tarjetas de la suite se vean igual. |
 | `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |

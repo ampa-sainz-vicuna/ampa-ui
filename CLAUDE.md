@@ -161,14 +161,33 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
 7. **Las tres aplicaciones están en la 0.2.0 y desplegadas** (25/09/2026), y
    tareas (sin desplegar) también la usa. El usuario comprobó ese día que la
    sesión viaja entre aplicaciones.
-8. **Siguiente: saltar entre aplicaciones desde la barra** (pedido por el
+8. **0.2.1: menos plano** (25/09/2026, **hecho por Claude**, pedido por el
+   usuario: «que todo no se vea tan plano en todas las apps», botones más
+   grandes, algo más de color). Solo añade: ninguna aplicación tiene que
+   cambiar su código para recibirlo.
+   - Tema: tarjetas con sombra suave teñida de azul en vez de borde (una
+     tarjeta `variant="outlined"` sigue saliendo con borde, útil dentro de un
+     diálogo), fondo `#F1F2F7`, botones de pastilla con la altura de Material 3
+     (40 px; 48 los `large`), los rellenos con sombra de su color y los de
+     borde con un fondo tenue, `Fab` con sombra de su color, diálogos con
+     esquinas de 20 px (0 a pantalla completa).
+   - `AppShell`: una franja de 3 px con el rojo del AMPA arriba de la barra.
+   - **`CardTitle`**, nuevo: la cabecera de tarjeta con el icono en un
+     círculo de color. Salió de fichajes, que es la primera que lo usa en
+     todas sus tarjetas.
+   - **Adoptada en fichajes.** **Falta en listados, facturación, portal y
+     tareas**: `npm install` de la URL de la 0.2.1, sus tests y su
+     despliegue. Se dejó para cada una porque tenían trabajo sin subir (su
+     `CLAUDE.md` modificado) y no convenía mezclarlo. Para que se vean como
+     fichajes, además, cambiar sus títulos de tarjeta por `CardTitle`.
+9. **Siguiente: saltar entre aplicaciones desde la barra** (pedido por el
    usuario el 25/09/2026: hoy no hay forma de volver al portal ni de pasar a
    otra aplicación). `AppShell` pinta un botón con las aplicaciones de esa
    persona y "Portal" (la dirección ya la tiene: `SuiteApp.portalUrl`). La
    lista sale de `/api/me` (`applications`), que tiene que añadir antes el
    cliente del portal (ver el `CLAUDE.md` del portal, pendiente 5). Si
    `/api/me` no la trae, al menos el enlace al portal: así la versión nueva
-   solo añade (0.2.1) y ninguna aplicación tiene que cambiar su código.
+   solo añade (0.2.2) y ninguna aplicación tiene que cambiar su código.
 
 ---
 
