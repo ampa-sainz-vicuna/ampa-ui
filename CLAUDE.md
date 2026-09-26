@@ -175,11 +175,17 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    - **`CardTitle`**, nuevo: la cabecera de tarjeta con el icono en un
      círculo de color. Salió de fichajes, que es la primera que lo usa en
      todas sus tarjetas.
-   - **Adoptada en fichajes.** **Falta en listados, facturación, portal y
-     tareas**: `npm install` de la URL de la 0.2.1, sus tests y su
-     despliegue. Se dejó para cada una porque tenían trabajo sin subir (su
-     `CLAUDE.md` modificado) y no convenía mezclarlo. Para que se vean como
-     fichajes, además, cambiar sus títulos de tarjeta por `CardTitle`.
+   - **Adoptada en fichajes**, y el 26/09/2026 (hecho por Claude, "hazlo
+     tú") **en listados, facturación, portal y tareas**: la 0.2.1 instalada y
+     sus tarjetas con `CardTitle` (ámbar lo que pide atención: alguien que ya
+     no aparece en listados, recibos por cobrar y mes por cerrar en
+     facturación). Los navegadores de mes y curso de facturación se quedan
+     como estaban: son flechas, no títulos. En el portal, "Mis correos" y
+     "Permisos" pasan a ir dentro de una tarjeta y las de las aplicaciones
+     pierden el borde; en tareas, columnas teñidas sin borde y tarjetas con
+     sombra. Tests, lint y build en verde en las cuatro (32, 56, 14 y 7
+     tests). **Falta**: verlas en el navegador, el commit de cada una (sin
+     mezclar su `CLAUDE.md`, que tenía cambios sin subir) y desplegarlas.
 9. **Siguiente: saltar entre aplicaciones desde la barra** (pedido por el
    usuario el 25/09/2026: hoy no hay forma de volver al portal ni de pasar a
    otra aplicación). `AppShell` pinta un botón con las aplicaciones de esa
