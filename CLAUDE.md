@@ -73,6 +73,15 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
 - **Nada de `import.meta.env`**: la librería no lee variables de entorno. Lo que
   cambia de una aplicación a otra le llega por `SuiteApp`.
 - **Lo que se exporta está en `src/index.ts`**; lo demás es interno.
+- **Ancho de las aplicaciones: `maxWidth="md"` (900 px) como mínimo**
+  (decidido con el usuario el 26/09/2026, para toda la suite): a 600 px
+  (`sm`, el valor por defecto de `AppShell`), en el ordenador todo va en una
+  columna estrecha y "apelotonada". Con `md`, lo que se mira a la vez va lado
+  a lado (en fichajes, fichar y la bolsa) y cada pantalla nueva se diseña
+  para ese ancho, y en el móvil se apila. Hoy: fichajes, listados, portal y
+  facturación en `md`; tareas en `lg` (es un tablero). Cambiar el valor por
+  defecto de `AppShell` a `md` sería lo limpio, pero obliga a publicar una
+  versión y subirla en todas: de momento cada una lo pasa explícito.
 - Getters y demás reglas de PHP no aplican aquí; sí el estilo de las
   aplicaciones: comentarios que explican el porqué, en español.
 
