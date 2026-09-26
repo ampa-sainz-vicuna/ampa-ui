@@ -1,6 +1,6 @@
 {
   "name": "@ampa/ui",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lo común del frontal de las aplicaciones del AMPA: tema, cabecera, entrada con Google y cliente de la API.",
   "private": true,
   "license": "UNLICENSED",

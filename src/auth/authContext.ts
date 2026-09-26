@@ -8,6 +8,20 @@ import { createContext, useContext } from 'react'
 export interface SessionUser {
   name: string
   email: string
+  /**
+   * A qué aplicaciones de la suite puede ir (desde el cliente del portal
+   * 0.1.4). Con ellas la barra pinta el selector para saltar de una a otra.
+   * Sin ellas (un servidor anterior), solo el enlace al portal.
+   */
+  applications?: SuiteLink[]
+}
+
+/** Una aplicación de la suite, tal como la da el portal. */
+export interface SuiteLink {
+  /** El código del catálogo del portal: "fichajes", "tareas"… */
+  code: string
+  name: string
+  url: string
 }
 
 /**

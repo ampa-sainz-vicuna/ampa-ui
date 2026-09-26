@@ -8,6 +8,7 @@ import { AppShell } from '../shell/AppShell.tsx'
 import { useAuth, type SessionUser } from './authContext.ts'
 import { LoginPage } from './LoginPage.tsx'
 import { NoAccessPage } from './NoAccessPage.tsx'
+import { SessionUserContext } from './sessionUserContext.ts'
 import { SignInAtPortal } from './SignInAtPortal.tsx'
 import { useSession } from './useSession.ts'
 
@@ -51,7 +52,11 @@ export function SessionGate<U extends SessionUser = SessionUser>({ children }: P
 
   switch (session.kind) {
     case 'ready':
-      return children({ user: session.user, onUnauthorized: expire, signOut: handleSignOut })
+      return (
+        <SessionUserContext value={session.user}>
+          {children({ user: session.user, onUnauthorized: expire, signOut: handleSignOut })}
+        </SessionUserContext>
+      )
 
     case 'signedOut':
       return google ? <LoginPage /> : <SignInAtPortal afterSignOut={signedOut} />

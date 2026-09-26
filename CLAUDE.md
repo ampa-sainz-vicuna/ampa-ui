@@ -194,6 +194,21 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
    cliente del portal (ver el `CLAUDE.md` del portal, pendiente 5). Si
    `/api/me` no la trae, al menos el enlace al portal: así la versión nueva
    solo añade (0.2.2) y ninguna aplicación tiene que cambiar su código.
+10. **0.2.2 hecha el 26/09/2026** (Claude, pedido por el usuario antes de
+    irse: «que el enlace del header lleve al portal» y «el selector en el
+    header entre aplicaciones»). Solo añade:
+    - El **logo** de la barra es un enlace al portal (`portalUrl`).
+    - **`ApplicationSwitcher`**: botón de cuadrícula en la barra con
+      "Portal" y, debajo, las aplicaciones de esa persona; la abierta sale
+      marcada, sin enlace (se reconoce por el origen de su `url`). Lo lee de
+      `SessionGate`, que ahora deja lo que contestó `/api/me` en
+      `SessionUserContext`: la aplicación no pasa nada. Sin `applications`
+      en `/api/me` (cliente del portal anterior a la 0.1.4), no sale.
+    - **`ApplicationIcon`** (exportado): el icono de cada aplicación por su
+      código, el mismo que las tarjetas del portal. `SuiteLink` y
+      `SessionUser.applications`, en los tipos.
+    - Visto en el navegador en tareas (escritorio y móvil) contra el portal
+      local. 40 tests.
 
 ---
 
