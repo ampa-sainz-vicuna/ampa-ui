@@ -184,8 +184,8 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
      "Permisos" pasan a ir dentro de una tarjeta y las de las aplicaciones
      pierden el borde; en tareas, columnas teñidas sin borde y tarjetas con
      sombra. Tests, lint y build en verde en las cuatro (32, 56, 14 y 7
-     tests). **Falta**: verlas en el navegador, el commit de cada una (sin
-     mezclar su `CLAUDE.md`, que tenía cambios sin subir) y desplegarlas.
+     tests). ~~Falta: verlas en el navegador, el commit de cada una (sin
+     mezclar su `CLAUDE.md`, que tenía cambios sin subir) y desplegarlas~~ **Hecho**: las cinco, subidas y desplegadas (y el 26/09/2026 otra vez, con la 0.2.2).
 9. **Siguiente: saltar entre aplicaciones desde la barra** (pedido por el
    usuario el 25/09/2026: hoy no hay forma de volver al portal ni de pasar a
    otra aplicación). `AppShell` pinta un botón con las aplicaciones de esa
