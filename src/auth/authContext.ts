@@ -41,8 +41,10 @@ export interface AuthState {
   /** Si la sesión se ha cerrado a propósito (el botón de salir), y no por caducar. */
   signedOut: boolean
   /**
-   * Solo en el portal: canjea la credencial de Google por la cookie de la
-   * suite (`POST /api/auth/google`). Lanza ApiError si falla.
+   * Canjea una credencial de Google por la cookie de la suite
+   * (`POST /api/auth/google`). Lanza ApiError si falla. Ya no la usa el
+   * botón (desde la 0.2.3 va en modo redirección y la vuelta la recibe el
+   * servidor del portal); se queda para no romper a quien la llame.
    */
   signIn: (googleCredential: string) => Promise<void>
   /** Borra la cookie (`POST /api/auth/salir`): sale de TODA la suite. */

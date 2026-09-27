@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { apiRequest } from '../api/client.ts'
 import { AuthContext, type AuthState } from './authContext.ts'
+import { clearSignInReturn, readSignInReturn, signInReturnNotice } from './signInReturn.ts'
 
 /**
  * La sesión de la suite: entrar (solo en el portal), salir y "ha caducado".
@@ -11,9 +12,20 @@ import { AuthContext, type AuthState } from './authContext.ts'
  * al servidor quién soy (`epoch`), y eso lo hace SessionGate.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [epoch, setEpoch] = useState(0)
-  const [notice, setNotice] = useState<string | null>(null)
+  // Si la página viene de entrar con Google (?entrada=, ver signInReturn.ts),
+  // se arranca como si se acabara de pulsar el botón: epoch en 1 (así el
+  // portal sabe que puede devolver sola a la aplicación de origen) o el aviso
+  // de por qué no se ha entrado.
+  const [signInReturn] = useState(readSignInReturn)
+  const [epoch, setEpoch] = useState(signInReturn === 'ok' ? 1 : 0)
+  const [notice, setNotice] = useState<string | null>(() => signInReturnNotice(signInReturn))
   const [signedOut, setSignedOut] = useState(false)
+
+  // Fuera de la dirección una vez leído. En un efecto y no al leerlo: React
+  // puede llamar dos veces a lo que calcula el estado inicial.
+  useEffect(() => {
+    clearSignInReturn()
+  }, [])
 
   const signIn = useCallback(async (googleCredential: string) => {
     await apiRequest('/api/auth/google', { method: 'POST', body: { credential: googleCredential } })

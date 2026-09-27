@@ -218,6 +218,24 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
       `SessionUser.applications`, en los tipos.
     - Visto en el navegador en tareas (escritorio y móvil) contra el portal
       local. 40 tests.
+11. **0.2.3: el botón de Google en modo redirección** (27/09/2026, Claude,
+    "hazlo tú"). A alguien con Android la ventana emergente de Google se le
+    quedaba en `about:blank` y no podía entrar (vídeo del usuario). Ahora la
+    página entera va a Google y Google la devuelve con un POST a
+    `/api/auth/google/vuelta` del portal (ruta nueva, `AuthController::
+    signInReturn`), que pone la cookie y lleva a `/?entrada=ok|sin-acceso|
+    no-valida|caducada` (con el `?volver=` que llevara, en el `state` de
+    GIS). `AuthProvider` lo lee (`signInReturn.ts`): con `ok` arranca con
+    `epoch` en 1 (el portal devuelve solo a la aplicación de origen, como
+    antes), si no, el porqué en `notice`; y lo quita de la dirección.
+    - Solo afecta al portal (el único con `google`): ninguna aplicación
+      cambia nada. `signIn` se queda en `AuthState` (exportado) aunque el
+      botón ya no lo use: quitarlo sería la segunda cifra.
+    - **Requisito**: la ruta de vuelta en los *URI de redirección
+      autorizados* del cliente OAuth, por cada origen (README del portal).
+    - Sin callback en `initialize()`: con él, GIS no redirige (lo usa en su
+      lugar). `state` no está en los tipos de `@types/google.accounts`.
+    - 45 tests.
 
 ---
 
