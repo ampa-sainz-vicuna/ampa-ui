@@ -236,6 +236,34 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
     - Sin callback en `initialize()`: con él, GIS no redirige (lo usa en su
       lugar). `state` no está en los tipos de `@types/google.accounts`.
     - 45 tests.
+12. **0.2.4: lavado de cara** (28/09/2026, Claude, pedido por el usuario:
+    «modernizar un poco la interfaz pero sin que pierda la esencia», para
+    toda la suite, con commit y despliegue). Solo cambia el aspecto: ninguna
+    aplicación cambia su código. Los mismos colores, Roboto y piezas; la
+    franja roja de la barra se queda.
+    - **Tema**: títulos en 700 con las letras algo más juntas (700 y no 600:
+      las aplicaciones solo cargan 400, 500 y 700), texto casi negro con un
+      punto de azul, bordes y divisores del azul muy rebajado, un halo muy
+      suave rojo y azul arriba del fondo, tarjetas de 16 px, campos de texto
+      blancos con un anillo rojo suave al escribir, pestañas con la raya de
+      3 px redondeada, menús y desplegables redondeados con borde fino,
+      globos de ayuda azul casi negro, avisos con un borde de su color, velo
+      azul difuminado detrás de los diálogos (24 px de esquina) y los botones
+      se hunden un pelo al pulsarlos.
+    - **`AppShell`**: la barra, blanca translúcida con desenfoque; primero el
+      nombre de la aplicación en negrita y debajo quién ha entrado (antes al
+      revés), con una raya entre el logo y los nombres; la barra y las
+      pestañas van en la misma columna que el contenido (`maxWidth`), no
+      pegadas a los bordes. Algo más de aire arriba del contenido.
+    - **`EntryCard`** (entrar, "te llevamos al portal", sin acceso): tarjeta
+      de 28 px con una banda roja recta arriba, sobre un fondo con los dos
+      colores muy difuminados.
+    - `CardTitle` hereda el peso de los títulos del tema.
+    - **La Ayuda, que estaba sin commit como 0.2.4, pasa a ser la 0.2.5**
+      (acordado con la sesión de tareas): está hecha encima de dafe0c7 en la
+      carpeta de siempre; al juntarla con esta choca en este punto 12 y
+      quizá en `AppShell.tsx`, fácil de resolver.
+    - 45 tests.
 
 ---
 

@@ -41,7 +41,7 @@ export function CardTitle({ icon, children, subtitle, action, color = 'secondary
         {icon}
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography variant="h6" component="h2" sx={{ fontWeight: 500, lineHeight: 1.3 }}>
+        <Typography variant="h6" component="h2" sx={{ lineHeight: 1.3 }}>
           {children}
         </Typography>
         {subtitle && (

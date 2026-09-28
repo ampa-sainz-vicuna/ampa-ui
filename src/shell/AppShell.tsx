@@ -3,6 +3,7 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import ButtonBase from '@mui/material/ButtonBase'
 import Container from '@mui/material/Container'
+import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
 import Tooltip from '@mui/material/Tooltip'
@@ -51,7 +52,10 @@ export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children 
         elevation={0}
         sx={{ borderTop: 3, borderTopColor: 'primary.main', borderBottom: 1, borderBottomColor: 'divider' }}
       >
-        <Toolbar sx={{ gap: 1.5 }}>
+        {/* Desde la 0.2.4, lo de la barra va en la misma columna que el
+            contenido (maxWidth), no pegado a los bordes de la pantalla: en el
+            ordenador el logo y las pestañas quedan alineados con las tarjetas. */}
+        <Toolbar sx={(theme) => ({ gap: 1.5, width: '100%', maxWidth: theme.breakpoints.values[maxWidth], mx: 'auto' })}>
           <Tooltip title="Ir al portal del AMPA">
             <ButtonBase
               href={portalUrl}
@@ -61,11 +65,14 @@ export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children 
               <Box component="img" src={AMPA_LOGO} alt="" sx={{ height: 36, width: 'auto', display: 'block' }} />
             </ButtonBase>
           </Tooltip>
+          <Divider orientation="vertical" flexItem sx={{ my: 1.75 }} />
+          {/* Desde la 0.2.4, primero dónde se está (la aplicación, en negrita) y
+              debajo, en gris, quién ha entrado: lo que se busca de un vistazo. */}
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Typography variant="caption" color="text.secondary" component="p" sx={{ lineHeight: 1.2 }} noWrap>
+            <Typography variant="subtitle2" component="p" sx={{ fontWeight: 700, lineHeight: 1.3 }} noWrap>
               {name}
             </Typography>
-            <Typography variant="subtitle2" component="p" noWrap>
+            <Typography variant="caption" color="text.secondary" component="p" sx={{ lineHeight: 1.3 }} noWrap>
               {userName ?? ' '}
             </Typography>
           </Box>
@@ -80,10 +87,16 @@ export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children 
             )}
           </Box>
         </Toolbar>
-        {tabs}
+        {/* El texto de la primera pestaña, a la altura del borde del contenido
+            (la pestaña ya trae 16 px de relleno por dentro). */}
+        {tabs && (
+          <Container maxWidth={maxWidth} disableGutters sx={{ px: { xs: 0, sm: 1 } }}>
+            {tabs}
+          </Container>
+        )}
       </AppBar>
 
-      <Container component="main" maxWidth={maxWidth} sx={{ py: 2, pb: 12 }}>
+      <Container component="main" maxWidth={maxWidth} sx={{ pt: { xs: 2, sm: 3 }, pb: 12 }}>
         {children}
       </Container>
     </>
