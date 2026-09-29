@@ -30,6 +30,7 @@ const LABELS: Record<string, string> = {
   listados: 'Listados',
   facturacion: 'Facturación',
   tareas: 'Tareas',
+  crm: 'Proveedores',
 }
 
 interface Props {

@@ -307,6 +307,15 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
       abrir una respuesta, «No está en la ayuda» y la pestaña de administración.
     - Contrato y comportamiento, en el README, *La ayuda de la barra*.
 
+14. **0.2.6: Proveedores (`crm`)** (29/09/2026, Claude, desde la sesión que
+    empezó [`ampa-crm`](../ampa-crm/CLAUDE.md); publicada con permiso del
+    usuario, "haz lo que falta"): su icono, `StorefrontRounded`, en
+    `ApplicationIcon`, y «Proveedores» en los nombres de la Ayuda
+    (`HelpPanel`). Solo añade: las aplicaciones no cambian nada; con una
+    versión anterior, la tarjeta y el selector enseñan el icono genérico.
+    72 tests y lint en verde. La suben el portal y proveedores; las demás,
+    cuando se toquen.
+
 ---
 
 ## Trampas conocidas

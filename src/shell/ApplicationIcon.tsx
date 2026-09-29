@@ -3,6 +3,7 @@ import AccountBalanceWalletRounded from '@mui/icons-material/AccountBalanceWalle
 import AppsRounded from '@mui/icons-material/AppsRounded'
 import FactCheckRounded from '@mui/icons-material/FactCheckRounded'
 import HomeRounded from '@mui/icons-material/HomeRounded'
+import StorefrontRounded from '@mui/icons-material/StorefrontRounded'
 import ViewKanbanRounded from '@mui/icons-material/ViewKanbanRounded'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
 import type { ComponentType } from 'react'
@@ -18,6 +19,7 @@ const ICONS: Record<string, ComponentType<SvgIconProps>> = {
   listados: FactCheckRounded,
   facturacion: AccountBalanceWalletRounded,
   tareas: ViewKanbanRounded,
+  crm: StorefrontRounded,
 }
 
 interface Props extends SvgIconProps {
