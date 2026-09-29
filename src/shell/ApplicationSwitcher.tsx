@@ -10,23 +10,11 @@ import Tooltip from '@mui/material/Tooltip'
 import { useId, useState } from 'react'
 import type { SuiteLink } from '../auth/authContext.ts'
 import { ApplicationIcon } from './ApplicationIcon.tsx'
+import { isHere } from './here.ts'
 
 interface Props {
   portalUrl: string
   applications: SuiteLink[]
-}
-
-/**
- * Si una dirección es la de esta misma página. Se compara el origen (esquema,
- * dominio y puerto): cada aplicación tiene el suyo, en producción y en
- * desarrollo.
- */
-function isHere(url: string): boolean {
-  try {
-    return new URL(url).origin === window.location.origin
-  } catch {
-    return false
-  }
 }
 
 /**

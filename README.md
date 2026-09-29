@@ -21,7 +21,7 @@ repositorio y tira de esta librería fijando una versión.
 |---|---|
 | `SuiteRoot` | Envuelve la aplicación en su `main.tsx`: tema, normalización de estilos y sesión. Recibe el `SuiteApp` (nombre, dirección del portal y, solo en el portal, el cliente de Google). |
 | `SessionGate` | La puerta: pregunta `GET /api/me` y, con sesión, le pasa a la aplicación `{ user, onUnauthorized, signOut }`; sin ella, al portal a entrar (o, en el portal, el botón de Google). Tabla completa en *Pasar de la 0.1 a la 0.2*. |
-| `AppShell` | La barra: logo, nombre de la aplicación, quién ha entrado, botón de salir y pestañas opcionales. `maxWidth` para las pantallas de tablas. |
+| `AppShell` | La barra: logo, nombre de la aplicación, quién ha entrado, la **ayuda** (desde la 0.2.5, ver *La ayuda de la barra*), el selector de aplicaciones, botón de salir y pestañas opcionales. `maxWidth` para las pantallas de tablas. |
 | `ConfirmDialog` | Preguntar antes de lo que no se deshace. Junta las tres versiones que había. |
 | `CardTitle` | La cabecera de una tarjeta: el icono en un círculo de color, el título (un `h2`), una línea opcional debajo y una acción a la derecha. Desde la 0.2.1, para que todas las tarjetas de la suite se vean igual. |
 | `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
@@ -43,6 +43,60 @@ las pone el cliente del portal (`ampa-portal/cliente`), no la aplicación:
 `POST /api/auth/google` con `{ credential }` solo existe en el portal: canjea
 la credencial de Google por la cookie. (Hasta la 0.1, cada aplicación tenía
 esa ruta y devolvía un token que se guardaba en el navegador.)
+
+### La ayuda de la barra (desde la 0.2.5)
+
+Con sesión, `AppShell` pinta un botón **«Ayuda»** (el de la interrogación)
+junto al selector de aplicaciones. Abre un panel a la derecha (a pantalla
+completa en el móvil) con un **buscador sobre preguntas ya escritas**, sin IA:
+
+- Sin nada escrito, las preguntas de la aplicación abierta y después las
+  generales. Escribiendo, las que encajan, de más a menos: sin tildes ni
+  mayúsculas, sin contar las palabras vacías («de», «cómo»…), con palabras a
+  medias («devuel» encuentra «devuelto»), y pesa más la pregunta que las
+  palabras clave y estas más que la respuesta (`src/help/search.ts`).
+- Si no está: «Preguntar al asistente», que abre el cuaderno de NotebookLM en
+  otra pestaña, y el correo al que escribir. El cuaderno, también al pie.
+- Las respuestas llevan párrafos, `1. ` pasos, `- ` viñetas y `**negrita**`,
+  y se pintan como elementos de React, nunca como HTML.
+
+**La aplicación no pasa nada**: basta con subir de versión. La dirección es
+la de `SuiteApp.portalUrl` y la aplicación abierta se reconoce como el
+selector, por el origen (`portal` en el propio portal; en una aplicación, la
+de `applications` de `/api/me` con este origen; sin esa lista, un servidor
+anterior al cliente del portal 0.1.4, solo salen las generales de entrada,
+y buscando, todas). Mientras `SessionGate` pregunta quién es (cargando, error)
+no sale.
+
+Lo que espera **del portal**, y solo del portal:
+
+```
+GET {portalUrl}/api/ayuda     con la cookie de la suite; 401 sin sesión
+{
+  "notebookUrl": "https://notebooklm.google.com/notebook/…" | null,
+  "contactEmail": "…" | null,
+  "updatedAt": "2026-09-28" | null,
+  "entries": [{
+    "id": "facturacion-cerrar-mes",
+    "application": "general" | "portal" | "fichajes" | "listados" | "facturacion" | "tareas",
+    "question": "¿Cómo cierro el mes?",
+    "answer": "Párrafo.\n\n1. Paso.\n2. Paso.\n\n- viñeta\n\nCon **negrita**.",
+    "keywords": ["cierre", "arqueo"],
+    "manual": "06" | null
+  }]
+}
+```
+
+- Desde una aplicación es **otro origen**: la llamada va con
+  `credentials: 'include'` (la cookie es de `.ampasainzvicuna.com`) y el
+  portal tiene que contestar **CORS con credenciales** a los orígenes de la
+  suite (`Access-Control-Allow-Origin` con el origen exacto, no `*`, y
+  `Access-Control-Allow-Credentials: true`). En el portal es el mismo origen.
+- **El servidor filtra** lo que cada persona puede ver (las generales y las
+  de sus aplicaciones): el navegador enseña todo lo que llega.
+- Se pide **la primera vez que se abre el panel**, no al cargar la página, y
+  se guarda en memoria mientras dure la página. Un fallo (sin red, 401, 500)
+  no se guarda: «No se ha podido cargar la ayuda» y «Reintentar».
 
 ### Lo que se ha dejado fuera, a propósito
 

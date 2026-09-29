@@ -259,11 +259,53 @@ release, con el hash en su lockfile. Sin credenciales ni `git` en ningún sitio.
       de 28 px con una banda roja recta arriba, sobre un fondo con los dos
       colores muy difuminados.
     - `CardTitle` hereda el peso de los títulos del tema.
-    - **La Ayuda, que estaba sin commit como 0.2.4, pasa a ser la 0.2.5**
-      (acordado con la sesión de tareas): está hecha encima de dafe0c7 en la
-      carpeta de siempre; al juntarla con esta choca en este punto 12 y
-      quizá en `AppShell.tsx`, fácil de resolver.
+    - La Ayuda, que estaba sin commit como 0.2.4, pasó a ser la 0.2.5
+      (acordado con la sesión de tareas): punto 13.
     - 45 tests.
+13. **0.2.5: la ayuda con buscador en la barra** (28/09/2026, Claude, pedido
+    por el usuario; **publicada el 29/09/2026**, junto con el lavado de
+    cara de la 0.2.4, y subida en las cinco). Es la pieza (3) de
+    la *Ayuda de la suite*: preguntas frecuentes con buscador, **sin IA**,
+    que derivan lo que no está al cuaderno de NotebookLM
+    ((el enlace, en `../ampa-manuales/CLAUDE.md`: este repositorio es público)).
+    Pieza (1), el contenido: `ampa-manuales/ayuda/faq.json`. Pieza (2), que
+    el portal sirva las preguntas: otro trabajo, en paralelo. **Orden
+    después**: revisión del usuario → publicar la 0.2.5 → portal → subir la
+    0.2.5 en las cinco.
+    - Contrato que consume: `GET {portalUrl}/api/ayuda` con
+      `credentials: 'include'` (la cookie es de `.ampasainzvicuna.com`; el
+      portal contesta CORS con credenciales a los orígenes de la suite; en
+      el portal es el mismo origen). 401 sin sesión. El servidor ya filtra lo
+      que la persona puede ver.
+      `{ notebookUrl: string|null, contactEmail: string|null, updatedAt:
+      "2026-09-28"|null, entries: [{ id, application:
+      "general|portal|fichajes|listados|facturacion|tareas", question,
+      answer (párrafos, "1. ", "- ", **negrita**), keywords: string[],
+      manual: "06"|null }] }`.
+    - Qué hay: `src/help/helpContent.ts` (tipos, `loadHelp` con caché en
+      memoria mientras dure la página, `parseHelp` que salta entradas mal
+      escritas), `src/help/search.ts` (NFD sin tildes, palabras vacías,
+      prefijos de 3 letras o más, pesos pregunta 10/7 > palabras clave 6/4 >
+      respuesta 2/1 (entera/a medias), ×la parte de las palabras con las que
+      encaja, entra con la mitad; +2 si es de la aplicación abierta),
+      `src/help/HelpAnswer.tsx` (párrafos, listas y negrita como elementos de
+      React, nunca HTML), `src/help/useHelp.ts` (carga perezosa al abrir el
+      panel, sin setState en el efecto, como `useSession`),
+      `src/help/HelpPanel.tsx` (el `Drawer`: buscador con foco, grupos,
+      acordeones, «No está en la ayuda» → «Preguntar al asistente» y el
+      correo, cuaderno al pie, cargando/error/vacío),
+      `src/help/HelpButton.tsx`, y `src/shell/here.ts` (`isHere`, sacado de
+      `ApplicationSwitcher`, y `currentApplication`: la aplicación abierta
+      por el origen, `portal` en el portal). En `AppShell`, el botón solo
+      con sesión (`SessionUserContext`), antes del selector.
+    - **Las aplicaciones no cambian nada**: basta con subir de versión (no
+      hay prop nueva; nada nuevo en `src/index.ts`).
+    - 72 tests (27 nuevos), lint, tipos y `npm pack` en verde;
+      `ampa-ui-0.2.5.tgz` en esta carpeta para probarla en local (README,
+      *Probar un cambio…*). **Vista en el navegador el 29/09/2026** en el
+      portal, con las 88 preguntas de verdad y una API simulada: buscar,
+      abrir una respuesta, «No está en la ayuda» y la pestaña de administración.
+    - Contrato y comportamiento, en el README, *La ayuda de la barra*.
 
 ---
 

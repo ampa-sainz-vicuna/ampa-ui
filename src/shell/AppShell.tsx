@@ -12,6 +12,7 @@ import type { ReactNode } from 'react'
 import { useSuiteApp } from '../app/suiteApp.ts'
 import { useSessionUser } from '../auth/sessionUserContext.ts'
 import { AMPA_LOGO } from '../brand/logo.ts'
+import { HelpButton } from '../help/HelpButton.tsx'
 import { ApplicationSwitcher } from './ApplicationSwitcher.tsx'
 
 interface Props {
@@ -39,10 +40,14 @@ interface Props {
  * El logo lleva al portal, como en cualquier web el logo lleva al inicio. El
  * selector sale cuando `/api/me` dice a qué aplicaciones puede ir (cliente
  * del portal 0.1.4); lo lee de SessionGate, sin que la aplicación lo pase.
+ *
+ * Desde la 0.2.5, con sesión, también el botón de la ayuda: las preguntas
+ * frecuentes que sirve el portal (`GET /api/ayuda`), con buscador.
  */
 export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children }: Props) {
   const { name, portalUrl } = useSuiteApp()
-  const applications = useSessionUser()?.applications ?? []
+  const sessionUser = useSessionUser()
+  const applications = sessionUser?.applications ?? []
 
   return (
     <>
@@ -77,6 +82,8 @@ export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children 
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: -1.5 }}>
+            {/* La ayuda la sirve el portal y solo a quien ha entrado: sin sesión (cargando, error) no sale. */}
+            {sessionUser !== null && <HelpButton portalUrl={portalUrl} applications={applications} />}
             {applications.length > 0 && <ApplicationSwitcher portalUrl={portalUrl} applications={applications} />}
             {onSignOut && (
               <Tooltip title="Cerrar sesión">
