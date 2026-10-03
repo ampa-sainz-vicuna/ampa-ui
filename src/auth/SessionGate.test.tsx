@@ -17,7 +17,7 @@ interface AdminUser extends SessionUser {
   isAdmin: boolean
 }
 
-const ALBERTO: AdminUser = { name: 'Alberto', email: 'alberto@ampasainzvicuna.com', isAdmin: true }
+const ALBERTO: AdminUser = { name: 'Alberto', email: 'alberto@ampa.test', isAdmin: true }
 
 function renderGate(app = TEST_APP) {
   return renderInSuite(

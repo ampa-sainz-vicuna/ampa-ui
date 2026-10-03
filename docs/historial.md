@@ -5,6 +5,38 @@ resumido allí.
 
 ---
 
+## 0.2.8, preparada, sin publicar (03/10/2026)
+
+**Sin commit ni etiqueta.** `package.json` ya está en 0.2.8; solo añade, así
+que sube la tercera cifra. Sale de la fase 2 de
+[`ampa-documentos`](../ampa-documentos/CLAUDE.md) (adjuntar desde Documentos).
+
+- **`DocumentPicker`** (`src/documents/`): selector con espacios, carpetas y
+  búsqueda; devuelve un `PickedDocument`. Props: `open`, `title`,
+  `confirmLabel`, `requireContent`, `busy`, `error`, `onPick`, `onClose`. A quien
+  no entra en Documentos le enseña un aviso.
+- **`documentsUrlOf(applications)`**, el tipo `PickedDocument` y el export de
+  `useSessionUser`.
+- **Solo lee** de Documentos (`credentials: 'include'`, CORS de Documentos); no
+  escribe nada allí: el uso lo apunta el servidor de cada aplicación, con la
+  cookie de quien pide (el cliente del portal rechaza los POST del navegador
+  desde otro subdominio).
+- README: apartado «Adjuntar desde Documentos».
+- Tests: 78, lint y tipos en verde. En `src/auth/SessionGate.test.tsx`, un
+  correo del dominio del AMPA cambiado por uno `@ampa.test` (el repo es
+  público).
+- **Falta**: publicarla (permiso del usuario: commit, etiqueta, push) y que
+  tareas la instale desde la release (de 0.2.5 a 0.2.8; la 0.2.6 y la 0.2.7
+  solo añadían iconos). Tareas apunta ahora a `file:../ampa-ui/ampa-ui-0.2.8.tgz`
+  para probar en local.
+- Salió del `CLAUDE.md` (resumen de versiones anteriores, copiado literal):
+  «Antes: 0.2.6 (el icono de Proveedores), 0.2.5 (la ayuda con buscador en la
+  barra, sin IA, contra `GET {portalUrl}/api/ayuda` con `credentials: 'include'`;
+  contrato en el README), 0.2.4 (lavado de cara), 0.2.3 (botón de Google en
+  modo redirección) y 0.2.2 (logo al portal y `ApplicationSwitcher`).»
+
+---
+
 ## 0.2.7, publicada el 03/10/2026
 
 - El icono de Documentos, `FolderCopyRounded`, en `ApplicationIcon`, y

@@ -27,7 +27,8 @@ repositorio y tira de esta librería fijando una versión.
 | `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |
-| `useAuth`, `useSuiteApp` | Para lo raro; lo normal es no necesitarlos. |
+| `DocumentPicker`, `documentsUrlOf`, `PickedDocument` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
+| `useAuth`, `useSuiteApp`, `useSessionUser` | Para lo raro; lo normal es no necesitarlos. `useSessionUser` (0.2.8): lo que contestó `/api/me`, dentro de `SessionGate`. |
 
 ### El contrato con el servidor
 
@@ -97,6 +98,38 @@ GET {portalUrl}/api/ayuda     con la cookie de la suite; 401 sin sesión
 - Se pide **la primera vez que se abre el panel**, no al cargar la página, y
   se guarda en memoria mientras dure la página. Un fallo (sin red, 401, 500)
   no se guarda: «No se ha podido cargar la ayuda» y «Reintentar».
+
+### Adjuntar desde Documentos (desde la 0.2.8)
+
+`DocumentPicker` es un diálogo para elegir un fichero de la aplicación
+Documentos (`ampa-documentos`): sus espacios, sus carpetas y la búsqueda (la
+de Drive, que lee también dentro de los PDF). **Solo elige**: devuelve un
+`PickedDocument` (`{ space, spaceName, id, name, mimeType, contentType, size }`)
+y la aplicación hace lo suyo **en su servidor**.
+
+```tsx
+const documentsUrl = documentsUrlOf(useSessionUser()?.applications) // null: no entra en Documentos
+<DocumentPicker open={open} busy={saving} error={error} requireContent={false}
+  onPick={(doc) => guardar(doc)} onClose={() => setOpen(false)} />
+```
+
+- **Lee de Documentos desde el navegador**, otro origen: `GET` con
+  `credentials: 'include'` a `/api/spaces`, `/api/spaces/{s}/folder(s/{id})` y
+  `/api/search?q=`. Documentos contesta CORS con credenciales solo a tareas,
+  proveedores y facturación, y solo esas rutas.
+- **No escribe nada en Documentos.** El cliente del portal rechaza los POST
+  del navegador desde otro subdominio (`CrossSiteRequestGuard`), así que el
+  servidor de la aplicación, con la cookie de quien adjunta, llama a
+  `POST {documentos}/api/spaces/{s}/items/{id}/usages`. Esa llamada es también
+  **la comprobación de permisos** (que esa persona vea el fichero) y deja en
+  Documentos el «usado en…». Tareas y proveedores guardan el enlace;
+  facturación, una copia (regla 3 de Documentos).
+- La dirección de Documentos sale de `applications` de `/api/me`: quien no
+  entra en Documentos ve un aviso en vez del selector (y la aplicación puede
+  no pintar el botón, con `documentsUrlOf`).
+- `requireContent` deja fuera lo que no se descarga (formularios de Google):
+  para quien se lleva una copia. `busy` y `error` son los del servidor de la
+  aplicación al guardar.
 
 ### Lo que se ha dejado fuera, a propósito
 

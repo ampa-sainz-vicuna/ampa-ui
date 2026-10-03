@@ -14,6 +14,7 @@ export { useSuiteApp, type SuiteApp } from './app/suiteApp.ts'
 // La sesión
 export { useAuth, type AuthState, type SessionUser, type SuiteLink } from './auth/authContext.ts'
 export { SessionGate, type Session } from './auth/SessionGate.tsx'
+export { useSessionUser } from './auth/sessionUserContext.ts'
 
 // El marco y los diálogos
 export { AppShell } from './shell/AppShell.tsx'
@@ -24,3 +25,7 @@ export { ConfirmDialog } from './shell/ConfirmDialog.tsx'
 // La API
 export { ApiError, apiDownload, apiRequest, messageOf, type DownloadedFile, type RequestOptions } from './api/client.ts'
 export { saveFile } from './api/saveFile.ts'
+
+// Adjuntar desde Documentos (desde la 0.2.8)
+export { DocumentPicker } from './documents/DocumentPicker.tsx'
+export { documentsUrlOf, type PickedDocument } from './documents/documentsApi.ts'

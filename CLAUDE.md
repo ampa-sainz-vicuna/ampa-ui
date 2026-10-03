@@ -1,8 +1,8 @@
 # AMPA UI — contexto para Claude
 
 La librería común del frontal de la suite del AMPA (`@ampa/ui`): tema, logo,
-cabecera, entrada con Google, diálogo de confirmación, ayuda con buscador y
-cliente de la API. La usan todas las aplicaciones, cada una en su repositorio
+cabecera, entrada con Google, diálogo de confirmación, ayuda con buscador,
+selector de documentos y cliente de la API. La usan todas las aplicaciones, cada una en su repositorio
 (tabla de repos en el `CLAUDE.md` global).
 
 El detalle de cada decisión (qué hay dentro, qué no y por qué, cómo se
@@ -66,18 +66,18 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.7** (03/10/2026; commit `97300bd`, etiqueta `v0.2.7`): el
-icono de Documentos (`FolderCopyRounded`) en `ApplicationIcon` y «Documentos»
-en los nombres de la Ayuda; solo añade (con una versión anterior, icono
-genérico). 72 tests, lint y tipos en verde. La usan el portal y documentos.
-Antes: 0.2.6 (el icono de Proveedores), 0.2.5 (la ayuda con buscador en la
-barra, sin IA, contra `GET {portalUrl}/api/ayuda` con `credentials: 'include'`;
-contrato en el README), 0.2.4 (lavado de cara), 0.2.3 (botón de Google en modo
-redirección) y 0.2.2 (logo al portal y `ApplicationSwitcher`); el resto, en el
-historial.
+Publicada: la **0.2.7** (03/10/2026; commit `97300bd`, etiqueta `v0.2.7`,
+icono de Documentos); la usan el portal y documentos. **0.2.8 preparada, SIN
+publicar** (`package.json` ya en 0.2.8; solo añade): `DocumentPicker`
+(`src/documents/`; espacios, carpetas y búsqueda; devuelve `PickedDocument`),
+`documentsUrlOf(applications)` y el export de `useSessionUser`. **Solo lee** de
+Documentos (`credentials: 'include'`); no escribe allí: lo apunta el servidor de
+la aplicación. README: «Adjuntar desde Documentos». 78 tests, lint y tipos en
+verde. Las versiones anteriores, en el historial.
 
-**Pendiente**: que las demás aplicaciones suban a la 0.2.7 cuando se toquen
-(sin prisa: solo cambia el icono de Documentos).
+**Pendiente**: publicar la 0.2.8 (**permiso del usuario**: commit, etiqueta y
+push) y que tareas la instale desde la release (hoy usa un `file:`, que no se
+puede commitear). Las demás aplicaciones suben cuando se toquen.
 
 ## Trampas vigentes
 
