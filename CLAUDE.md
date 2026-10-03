@@ -66,18 +66,17 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada: la **0.2.7** (03/10/2026; commit `97300bd`, etiqueta `v0.2.7`,
-icono de Documentos); la usan el portal y documentos. **0.2.8 preparada, SIN
-publicar** (`package.json` ya en 0.2.8; solo añade): `DocumentPicker`
+Publicada la **0.2.8** (03/10/2026; commit `d46fc57`, etiqueta `v0.2.8`; solo
+añade): `DocumentPicker`
 (`src/documents/`; espacios, carpetas y búsqueda; devuelve `PickedDocument`),
 `documentsUrlOf(applications)` y el export de `useSessionUser`. **Solo lee** de
 Documentos (`credentials: 'include'`); no escribe allí: lo apunta el servidor de
 la aplicación. README: «Adjuntar desde Documentos». 78 tests, lint y tipos en
-verde. Las versiones anteriores, en el historial.
+verde. La usa tareas; el portal y documentos siguen en la 0.2.7. Las versiones
+anteriores, en el historial.
 
-**Pendiente**: publicar la 0.2.8 (**permiso del usuario**: commit, etiqueta y
-push) y que tareas la instale desde la release (hoy usa un `file:`, que no se
-puede commitear). Las demás aplicaciones suben cuando se toquen.
+**Pendiente**: las demás aplicaciones suben cuando se toquen (proveedores y
+facturación, al adjuntar desde Documentos).
 
 ## Trampas vigentes
 
