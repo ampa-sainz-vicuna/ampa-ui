@@ -5,6 +5,22 @@ resumido allí.
 
 ---
 
+## 0.2.7, publicada el 03/10/2026
+
+- El icono de Documentos, `FolderCopyRounded`, en `ApplicationIcon`, y
+  «Documentos» en los nombres de la Ayuda (`HelpPanel`). Como la 0.2.6, solo
+  añade: las aplicaciones no cambian nada (con una versión anterior, icono
+  genérico).
+- Hecha por Claude desde la sesión que empezó
+  [`ampa-documentos`](../ampa-documentos/CLAUDE.md). Commit `97300bd`
+  «Versión 0.2.7: el icono y el nombre de Documentos», etiqueta `v0.2.7`; la
+  Action «Publicar versión» acabó bien y colgó `ampa-ui-0.2.7.tgz`.
+- 72 tests, lint y tipos en verde.
+- Ya la usan el portal (`cb2149f`) y documentos (`a7e16fc`); las demás, cuando
+  se toquen.
+
+---
+
 ## Estado
 
 **Hecho (24/09/2026, a petición del usuario, "hazlo tú")**

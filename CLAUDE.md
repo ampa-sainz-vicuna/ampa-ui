@@ -66,25 +66,18 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.6** (29/09/2026): el icono de Proveedores
-(`StorefrontRounded`) en `ApplicationIcon` y «Proveedores» en los nombres de la
-Ayuda; las aplicaciones no cambian nada (con una versión anterior, icono
-genérico). 72 tests y lint en verde. Antes: 0.2.5 (la ayuda con buscador en la
+Publicada la **0.2.7** (03/10/2026; commit `97300bd`, etiqueta `v0.2.7`): el
+icono de Documentos (`FolderCopyRounded`) en `ApplicationIcon` y «Documentos»
+en los nombres de la Ayuda; solo añade (con una versión anterior, icono
+genérico). 72 tests, lint y tipos en verde. La usan el portal y documentos.
+Antes: 0.2.6 (el icono de Proveedores), 0.2.5 (la ayuda con buscador en la
 barra, sin IA, contra `GET {portalUrl}/api/ayuda` con `credentials: 'include'`;
 contrato en el README), 0.2.4 (lavado de cara), 0.2.3 (botón de Google en modo
 redirección) y 0.2.2 (logo al portal y `ApplicationSwitcher`); el resto, en el
 historial.
 
-**En curso, sin publicar: 0.2.7** (03/10/2026, Claude, desde la sesión que
-empezó [`ampa-documentos`](../ampa-documentos/CLAUDE.md); **sin commit**): el
-icono de Documentos, `FolderCopyRounded`, en `ApplicationIcon`, y
-«Documentos» en los nombres de la Ayuda (`HelpPanel`). Como la 0.2.6, solo
-añade. Cambios ya hechos en `src/shell/ApplicationIcon.tsx` y
-`src/help/HelpPanel.tsx`.
-
-**Pendiente**: subir la versión en `package.json` (hoy 0.2.6), commit y
-release de la 0.2.7; después la suben el portal y documentos, y las demás
-cuando se toquen.
+**Pendiente**: que las demás aplicaciones suban a la 0.2.7 cuando se toquen
+(sin prisa: solo cambia el icono de Documentos).
 
 ## Trampas vigentes
 
