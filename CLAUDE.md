@@ -66,14 +66,18 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.8** (03/10/2026; commit `d46fc57`, etiqueta `v0.2.8`; solo
-añade): `DocumentPicker`
-(`src/documents/`; espacios, carpetas y búsqueda; devuelve `PickedDocument`),
-`documentsUrlOf(applications)` y el export de `useSessionUser`. **Solo lee** de
-Documentos (`credentials: 'include'`); no escribe allí: lo apunta el servidor de
-la aplicación. README: «Adjuntar desde Documentos». 78 tests, lint y tipos en
-verde. La usa tareas; el portal y documentos siguen en la 0.2.7. Las versiones
-anteriores, en el historial.
+Publicada la **0.2.9** (04/10/2026; commit `1ba5fa9`, etiqueta `v0.2.9`; solo
+añade): `AppShell` acepta `home?: { href, label }` para que el logo lleve a
+otro sitio (por defecto, al portal); lo usan las pantallas públicas de
+Documentos (logo a `https://ampasainzvicuna.com`). 79 tests, lint, tipos y
+build en verde. Incluye la 0.2.8: `DocumentPicker` (`src/documents/`; espacios,
+carpetas y búsqueda; devuelve `PickedDocument`), `documentsUrlOf(applications)`
+y el export de `useSessionUser`. **Solo lee** de Documentos
+(`credentials: 'include'`); no escribe allí: lo apunta el servidor de la
+aplicación. README: «Adjuntar desde Documentos».
+**Quién usa qué**: documentos 0.2.9; tareas, proveedores y facturación 0.2.8;
+portal 0.2.7; fichajes y listados 0.2.5. Las versiones anteriores, en el
+historial.
 
 **Pendiente**: las demás aplicaciones suben cuando se toquen (proveedores y
 facturación, al adjuntar desde Documentos).

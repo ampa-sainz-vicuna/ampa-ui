@@ -5,6 +5,23 @@ resumido allí.
 
 ---
 
+## 0.2.9, publicada (04/10/2026)
+
+Commit `1ba5fa9`, etiqueta `v0.2.9`, release construida por la Action. Solo
+añade, por eso sube la tercera cifra.
+
+- **`AppShell` acepta `home?: { href, label }`**: a dónde lleva el logo. Por
+  defecto, al portal, como siempre.
+- **Por qué**: las pantallas públicas de Documentos (firmar con enlace y
+  comprobar un PDF, `?firma` y `?verificar`) son para gente de fuera de la
+  suite, que no puede entrar en el portal. Allí el logo lleva a
+  `https://ampasainzvicuna.com`.
+- Tests: 79, lint, tipos y build en verde.
+- Quién la usa: documentos 0.2.9; tareas, proveedores y facturación 0.2.8;
+  fichajes y listados 0.2.5; portal 0.2.7.
+
+---
+
 ## 0.2.8, preparada, sin publicar (03/10/2026)
 
 **Sin commit ni etiqueta.** `package.json` ya está en 0.2.8; solo añade, así
