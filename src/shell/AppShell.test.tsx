@@ -35,6 +35,13 @@ describe('AppShell', () => {
     expect(screen.getByRole('link', { name: 'Ir al portal del AMPA' }).getAttribute('href')).toBe('https://portal.ampa.test')
   })
 
+  it('con home, el logo lleva ahí y no al portal (pantallas de gente de fuera)', () => {
+    renderInSuite(<AppShell home={{ href: 'https://ampa.test', label: 'Ir a la web del AMPA' }}>Contenido</AppShell>)
+
+    expect(screen.getByRole('link', { name: 'Ir a la web del AMPA' }).getAttribute('href')).toBe('https://ampa.test')
+    expect(screen.queryByRole('link', { name: 'Ir al portal del AMPA' })).toBeNull()
+  })
+
   it('sin la lista de aplicaciones (un servidor anterior) no hay selector', () => {
     renderInSuite(
       <SessionUserContext value={{ name: 'Alberto', email: 'info@ampa.test' }}>

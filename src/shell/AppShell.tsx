@@ -27,6 +27,12 @@ interface Props {
    * `md` o `lg` para las pantallas de tablas (el diario, la configuración).
    */
   maxWidth?: 'sm' | 'md' | 'lg'
+  /**
+   * Adónde lleva el logo, si no es al portal (desde la 0.2.9). Para pantallas
+   * de gente de fuera de la suite, que no puede entrar en el portal: la
+   * pantalla pública de firma de documentos lleva a la web del AMPA.
+   */
+  home?: { href: string; label: string }
   children: ReactNode
 }
 
@@ -44,10 +50,11 @@ interface Props {
  * Desde la 0.2.5, con sesión, también el botón de la ayuda: las preguntas
  * frecuentes que sirve el portal (`GET /api/ayuda`), con buscador.
  */
-export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children }: Props) {
+export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', home, children }: Props) {
   const { name, portalUrl } = useSuiteApp()
   const sessionUser = useSessionUser()
   const applications = sessionUser?.applications ?? []
+  const logoLink = home ?? { href: portalUrl, label: 'Ir al portal del AMPA' }
 
   return (
     <>
@@ -61,10 +68,10 @@ export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', children 
             contenido (maxWidth), no pegado a los bordes de la pantalla: en el
             ordenador el logo y las pestañas quedan alineados con las tarjetas. */}
         <Toolbar sx={(theme) => ({ gap: 1.5, width: '100%', maxWidth: theme.breakpoints.values[maxWidth], mx: 'auto' })}>
-          <Tooltip title="Ir al portal del AMPA">
+          <Tooltip title={logoLink.label}>
             <ButtonBase
-              href={portalUrl}
-              aria-label="Ir al portal del AMPA"
+              href={logoLink.href}
+              aria-label={logoLink.label}
               sx={{ borderRadius: 2, p: 0.5, m: -0.5, '&:hover': { bgcolor: 'action.hover' } }}
             >
               <Box component="img" src={AMPA_LOGO} alt="" sx={{ height: 36, width: 'auto', display: 'block' }} />
