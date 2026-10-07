@@ -28,4 +28,4 @@ export { saveFile } from './api/saveFile.ts'
 
 // Adjuntar desde Documentos (desde la 0.2.8)
 export { DocumentPicker } from './documents/DocumentPicker.tsx'
-export { documentsUrlOf, type PickedDocument } from './documents/documentsApi.ts'
+export { documentsUrlOf, type PickedDocument, type PickedFolder } from './documents/documentsApi.ts'

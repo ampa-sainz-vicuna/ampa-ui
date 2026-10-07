@@ -26,7 +26,7 @@ import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 import { useCallback, useEffect, useId, useState, type ReactNode } from 'react'
-import { messageOf } from '../api/client.ts'
+import { ApiError, messageOf } from '../api/client.ts'
 import { useSessionUser } from '../auth/sessionUserContext.ts'
 import {
   documentsUrlOf,
@@ -36,6 +36,7 @@ import {
   searchDocuments,
   type DocumentItem,
   type PickedDocument,
+  type PickedFolder,
 } from './documentsApi.ts'
 
 interface Props {
@@ -53,6 +54,12 @@ interface Props {
   busy?: boolean
   /** Lo que haya contestado el servidor de la aplicación al guardarlo. */
   error?: string | null
+  /**
+   * Abrir directamente en una carpeta (las «recientes» de la aplicación) en
+   * vez de en los espacios; `folder` null es la raíz del espacio. Si ya no
+   * existe o no se ve, se vuelve a los espacios con un aviso.
+   */
+  initialFolder?: { space: string; folder: string | null }
   /** Con lo elegido, la aplicación guarda el adjunto (y cierra el diálogo cuando acabe). */
   onPick: (document: PickedDocument) => void
   onClose: () => void
@@ -71,7 +78,7 @@ interface Props {
  * Quien no entra en Documentos (no sale en `applications` de `/api/me`) ve un
  * aviso en vez del selector. En el móvil, a pantalla completa.
  */
-export function DocumentPicker({ open, title = 'Adjuntar desde Documentos', confirmLabel = 'Adjuntar', requireContent = false, busy = false, error = null, onPick, onClose }: Props) {
+export function DocumentPicker({ open, title = 'Adjuntar desde Documentos', confirmLabel = 'Adjuntar', requireContent = false, busy = false, error = null, initialFolder, onPick, onClose }: Props) {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const titleId = useId()
@@ -85,19 +92,23 @@ export function DocumentPicker({ open, title = 'Adjuntar desde Documentos', conf
         </IconButton>
       </DialogTitle>
       {/* Dentro del Dialog: se monta de nuevo cada vez que se abre, sin lo elegido la vez anterior. */}
-      <PickerBody confirmLabel={confirmLabel} requireContent={requireContent} busy={busy} error={error} onPick={onPick} onClose={onClose} />
+      <PickerBody confirmLabel={confirmLabel} requireContent={requireContent} busy={busy} error={error} initialFolder={initialFolder} onPick={onPick} onClose={onClose} />
     </Dialog>
   )
 }
 
 type Place = { kind: 'spaces' } | { kind: 'folder'; space: string; folder: string | null }
 
-type Selected = { space: { code: string; name: string }; item: DocumentItem }
+type Selected = { space: { code: string; name: string }; item: DocumentItem; folder: PickedFolder | null }
 
-function PickerBody({ confirmLabel, requireContent, busy, error, onPick, onClose }: Required<Omit<Props, 'open' | 'title'>>) {
+function PickerBody({ confirmLabel, requireContent, busy, error, initialFolder, onPick, onClose }: Required<Omit<Props, 'open' | 'title' | 'initialFolder'>> & Pick<Props, 'initialFolder'>) {
   const user = useSessionUser()
   const baseUrl = documentsUrlOf(user?.applications)
-  const [place, setPlace] = useState<Place>({ kind: 'spaces' })
+  const [place, setPlace] = useState<Place>(initialFolder === undefined ? { kind: 'spaces' } : { kind: 'folder', space: initialFolder.space, folder: initialFolder.folder })
+  // Mientras se esté en la carpeta inicial sin haber tocado nada, si no carga
+  // (404/403) se vuelve a los espacios; en cuanto se navega, un fallo es un fallo.
+  const [onInitial, setOnInitial] = useState(initialFolder !== undefined)
+  const [notice, setNotice] = useState(false)
   const [text, setText] = useState('')
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<Selected | null>(null)
@@ -123,8 +134,9 @@ function PickerBody({ confirmLabel, requireContent, busy, error, onPick, onClose
   }
 
   const searching = query.length >= 2
-  const choose = (space: { code: string; name: string }, item: DocumentItem) => {
+  const choose = (space: { code: string; name: string }, item: DocumentItem, folder: PickedFolder | null) => {
     if (item.kind === 'folder') {
+      setOnInitial(false)
       setPlace({ kind: 'folder', space: space.code, folder: item.id })
       setSelected(null)
       // Las dos: si no, la búsqueda seguiría a la vista hasta que pasara la espera.
@@ -132,7 +144,7 @@ function PickerBody({ confirmLabel, requireContent, busy, error, onPick, onClose
       setQuery('')
       return
     }
-    setSelected({ space, item })
+    setSelected({ space, item, folder })
   }
 
   return (
@@ -160,7 +172,20 @@ function PickerBody({ confirmLabel, requireContent, busy, error, onPick, onClose
         {searching ? (
           <SearchList baseUrl={baseUrl} query={query} requireContent={requireContent} selected={selected} onChoose={choose} />
         ) : place.kind === 'spaces' ? (
-          <SpacesList baseUrl={baseUrl} onOpen={(space) => setPlace({ kind: 'folder', space, folder: null })} />
+          <>
+            {notice && (
+              <Alert severity="info" variant="outlined" sx={{ mx: 2, mb: 1 }}>
+                Esa carpeta ya no está en Documentos o no la puedes ver.
+              </Alert>
+            )}
+            <SpacesList
+              baseUrl={baseUrl}
+              onOpen={(space) => {
+                setNotice(false)
+                setPlace({ kind: 'folder', space, folder: null })
+              }}
+            />
+          </>
         ) : (
           <FolderList
             baseUrl={baseUrl}
@@ -169,7 +194,17 @@ function PickerBody({ confirmLabel, requireContent, busy, error, onPick, onClose
             requireContent={requireContent}
             selected={selected}
             onChoose={choose}
+            onMissing={
+              onInitial
+                ? () => {
+                    setOnInitial(false)
+                    setNotice(true)
+                    setPlace({ kind: 'spaces' })
+                  }
+                : undefined
+            }
             onGo={(next) => {
+              setOnInitial(false)
               setPlace(next)
               setSelected(null)
             }}
@@ -189,7 +224,7 @@ function PickerBody({ confirmLabel, requireContent, busy, error, onPick, onClose
           <Button onClick={onClose} disabled={busy}>
             Cancelar
           </Button>
-          <Button variant="contained" disabled={selected === null || busy} onClick={() => selected !== null && onPick(pickedFrom(selected.space, selected.item))}>
+          <Button variant="contained" disabled={selected === null || busy} onClick={() => selected !== null && onPick(pickedFrom(selected.space, selected.item, selected.folder))}>
             {busy ? 'Guardando…' : confirmLabel}
           </Button>
         </Box>
@@ -231,6 +266,7 @@ function FolderList({
   requireContent,
   selected,
   onChoose,
+  onMissing,
   onGo,
 }: {
   baseUrl: string
@@ -238,11 +274,21 @@ function FolderList({
   folder: string | null
   requireContent: boolean
   selected: Selected | null
-  onChoose: (space: { code: string; name: string }, item: DocumentItem) => void
+  onChoose: (space: { code: string; name: string }, item: DocumentItem, folder: PickedFolder | null) => void
+  /** Solo en la carpeta inicial: la carpeta no existe o no se ve. */
+  onMissing: (() => void) | undefined
   onGo: (place: Place) => void
 }) {
   const load = useCallback(() => fetchFolder(baseUrl, space, folder), [baseUrl, space, folder])
   const status = useLoad(`folder:${baseUrl}:${space}:${folder ?? ''}`, load)
+  const missing = status.kind === 'error' && (status.code === 404 || status.code === 403)
+
+  useEffect(() => {
+    if (missing && onMissing !== undefined) onMissing()
+  }, [missing, onMissing])
+
+  // Sin error rojo: ya se está volviendo a los espacios.
+  if (missing && onMissing !== undefined) return null
 
   return (
     <Loaded status={status}>
@@ -274,7 +320,7 @@ function FolderList({
           {view.items.length === 0 ? (
             <Empty text="Esta carpeta está vacía." />
           ) : (
-            <ItemList items={view.items.map((item) => ({ space: view.space, item, detail: null }))} requireContent={requireContent} selected={selected} onChoose={onChoose} />
+            <ItemList items={view.items.map((item) => ({ space: view.space, item, detail: null, folder: { id: view.folder?.id ?? null, name: view.folder?.name ?? view.space.name } }))} requireContent={requireContent} selected={selected} onChoose={onChoose} />
           )}
         </>
       )}
@@ -293,7 +339,7 @@ function SearchList({
   query: string
   requireContent: boolean
   selected: Selected | null
-  onChoose: (space: { code: string; name: string }, item: DocumentItem) => void
+  onChoose: (space: { code: string; name: string }, item: DocumentItem, folder: PickedFolder | null) => void
 }) {
   const load = useCallback(() => searchDocuments(baseUrl, query), [baseUrl, query])
   const status = useLoad(`search:${baseUrl}:${query}`, load)
@@ -305,7 +351,7 @@ function SearchList({
           <Empty text={`Nada con «${query}» en lo que ves.`} />
         ) : (
           <ItemList
-            items={hits.map((hit) => ({ space: hit.space, item: hit.item, detail: [hit.space.name, hit.folderName].filter((part) => part !== null).join(' › ') }))}
+            items={hits.map((hit) => ({ space: hit.space, item: hit.item, detail: [hit.space.name, hit.folderName].filter((part) => part !== null).join(' › '), folder: null }))}
             requireContent={requireContent}
             selected={selected}
             onChoose={onChoose}
@@ -322,21 +368,21 @@ function ItemList({
   selected,
   onChoose,
 }: {
-  items: { space: { code: string; name: string }; item: DocumentItem; detail: string | null }[]
+  items: { space: { code: string; name: string }; item: DocumentItem; detail: string | null; folder: PickedFolder | null }[]
   requireContent: boolean
   selected: Selected | null
-  onChoose: (space: { code: string; name: string }, item: DocumentItem) => void
+  onChoose: (space: { code: string; name: string }, item: DocumentItem, folder: PickedFolder | null) => void
 }) {
   return (
     <List aria-label="Carpetas y ficheros" dense>
-      {items.map(({ space, item, detail }) => {
+      {items.map(({ space, item, detail, folder }) => {
         const unusable = item.kind === 'file' && requireContent && item.contentType === null
         return (
           <ListItemButton
             key={`${space.code}/${item.id}`}
             selected={selected?.item.id === item.id && selected.space.code === space.code}
             disabled={unusable}
-            onClick={() => onChoose(space, item)}
+            onClick={() => onChoose(space, item, folder)}
           >
             <ListItemIcon>{iconOf(item)}</ListItemIcon>
             <ListItemText
@@ -366,7 +412,7 @@ function Empty({ text }: { text: string }) {
   )
 }
 
-type LoadStatus<T> = { kind: 'loading' } | { kind: 'ready'; value: T } | { kind: 'error'; message: string; retry: () => void }
+type LoadStatus<T> = { kind: 'loading' } | { kind: 'ready'; value: T } | { kind: 'error'; message: string; code: number | null; retry: () => void }
 
 /**
  * Pide algo a Documentos cada vez que cambia `key`, como `useHelp`: la
@@ -386,7 +432,7 @@ function useLoad<T>(key: string, load: () => Promise<T>): LoadStatus<T> {
         if (!cancelled) setAnswer({ question, status: { kind: 'ready', value } })
       })
       .catch((failure: unknown) => {
-        if (!cancelled) setAnswer({ question, status: { kind: 'error', message: messageOf(failure), retry } })
+        if (!cancelled) setAnswer({ question, status: { kind: 'error', message: messageOf(failure), code: failure instanceof ApiError ? failure.status : null, retry } })
       })
 
     return () => {

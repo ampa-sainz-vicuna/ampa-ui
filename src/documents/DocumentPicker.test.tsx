@@ -89,6 +89,7 @@ describe('El selector de Documentos', () => {
       mimeType: 'application/pdf',
       contentType: 'application/pdf',
       size: 1200,
+      folder: { id: 'actas', name: 'Actas' },
     })
     // Otro origen: con la cookie de la suite, y a la dirección que da el portal (sin la barra del final).
     expect(fetchMock).toHaveBeenCalledWith(`${DOCUMENTS}/api/spaces`, expect.objectContaining({ credentials: 'include' }))
@@ -118,7 +119,37 @@ describe('El selector de Documentos', () => {
 
     await userEvent.click(hit)
     await userEvent.click(screen.getByRole('button', { name: 'Adjuntar' }))
-    expect(onPick).toHaveBeenCalledWith(expect.objectContaining({ space: 'junta', id: 'acta-junta' }))
+    expect(onPick).toHaveBeenCalledWith(expect.objectContaining({ space: 'junta', id: 'acta-junta', folder: null }))
+  })
+
+  it('abre directamente en la carpeta indicada, con las migas para subir a los espacios', async () => {
+    const fetchMock = stubDocuments({ '/api/spaces': SPACES, '/api/spaces/ampa/folders/actas': ACTAS, '/api/spaces/ampa/folder': ROOT })
+    renderPicker({ initialFolder: { space: 'ampa', folder: 'actas' } })
+
+    expect(await screen.findByRole('button', { name: 'Acta octubre.pdf' })).toBeTruthy()
+    expect(fetchMock).not.toHaveBeenCalledWith(`${DOCUMENTS}/api/spaces`, expect.anything())
+
+    await userEvent.click(screen.getByRole('button', { name: 'Subir un nivel' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Subir un nivel' }))
+    expect(await screen.findByRole('button', { name: /Junta/ })).toBeTruthy()
+  })
+
+  it('vuelve a los espacios con un aviso, sin error rojo, si la carpeta inicial ya no está', async () => {
+    stubDocuments({ '/api/spaces': SPACES })
+    renderPicker({ initialFolder: { space: 'ampa', folder: 'borrada' } })
+
+    expect(await screen.findByText('Esa carpeta ya no está en Documentos o no la puedes ver.')).toBeTruthy()
+    expect(await screen.findByRole('button', { name: /AMPA/ })).toBeTruthy()
+    expect(screen.queryByText('No está.')).toBeNull()
+  })
+
+  it('dice de qué carpeta sale lo elegido, también desde la raíz del espacio', async () => {
+    stubDocuments({ '/api/spaces/ampa/folder': ROOT })
+    const onPick = renderPicker({ initialFolder: { space: 'ampa', folder: null } })
+
+    await userEvent.click(await screen.findByRole('button', { name: /Presupuesto balones/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Adjuntar' }))
+    expect(onPick).toHaveBeenCalledWith(expect.objectContaining({ id: 'presupuesto', folder: { id: null, name: 'AMPA' } }))
   })
 
   it('dice lo que contesta Documentos y deja reintentar', async () => {

@@ -27,7 +27,7 @@ repositorio y tira de esta librería fijando una versión.
 | `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |
-| `DocumentPicker`, `documentsUrlOf`, `PickedDocument` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
+| `DocumentPicker`, `documentsUrlOf`, `PickedDocument`, `PickedFolder` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
 | `useAuth`, `useSuiteApp`, `useSessionUser` | Para lo raro; lo normal es no necesitarlos. `useSessionUser` (0.2.8): lo que contestó `/api/me`, dentro de `SessionGate`. |
 
 ### El contrato con el servidor
@@ -104,7 +104,7 @@ GET {portalUrl}/api/ayuda     con la cookie de la suite; 401 sin sesión
 `DocumentPicker` es un diálogo para elegir un fichero de la aplicación
 Documentos (`ampa-documentos`): sus espacios, sus carpetas y la búsqueda (la
 de Drive, que lee también dentro de los PDF). **Solo elige**: devuelve un
-`PickedDocument` (`{ space, spaceName, id, name, mimeType, contentType, size }`)
+`PickedDocument` (`{ space, spaceName, id, name, mimeType, contentType, size, folder }`)
 y la aplicación hace lo suyo **en su servidor**.
 
 ```tsx
@@ -130,6 +130,22 @@ const documentsUrl = documentsUrlOf(useSessionUser()?.applications) // null: no 
 - `requireContent` deja fuera lo que no se descarga (formularios de Google):
   para quien se lleva una copia. `busy` y `error` son los del servidor de la
   aplicación al guardar.
+
+- **Carpetas recientes (desde la 0.2.10).** `PickedDocument.folder`
+  (`{ id: string | null, name } | null`) dice de qué carpeta se eligió: `id`
+  null es la raíz del espacio (y `name`, el espacio). Elegido desde la
+  búsqueda es `null`: el resultado trae el nombre de la carpeta pero no su id.
+  La aplicación que quiera «recientes» guarda `{ space, folder: id }` y se lo
+  pasa luego a `initialFolder`, que abre el selector en esa carpeta (las migas
+  siguen subiendo hasta los espacios). Si ya no existe o no se ve (404/403),
+  vuelve a los espacios con un aviso, sin error rojo. Las aplicaciones que no
+  lo usen siguen igual.
+
+```tsx
+<DocumentPicker open={open} initialFolder={recent[0]} // { space: 'ampa', folder: 'id-de-carpeta' | null }
+  onPick={(doc) => { remember({ space: doc.space, folder: doc.folder?.id ?? null }); guardar(doc) }}
+  onClose={() => setOpen(false)} />
+```
 
 ### Lo que se ha dejado fuera, a propósito
 

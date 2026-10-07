@@ -50,6 +50,15 @@ export interface DocumentHit {
   folderName: string | null
 }
 
+/**
+ * La carpeta de la que se eligió un fichero. `id` null: la raíz del espacio
+ * (y `name` es el nombre del espacio).
+ */
+export interface PickedFolder {
+  id: string | null
+  name: string
+}
+
 /** Lo que devuelve el selector: con esto la aplicación guarda el adjunto. */
 export interface PickedDocument {
   space: string
@@ -59,6 +68,12 @@ export interface PickedDocument {
   mimeType: string
   contentType: string | null
   size: number | null
+  /**
+   * De qué carpeta salió (para «carpetas recientes»). Desde la búsqueda,
+   * null: el resultado trae el nombre de la carpeta pero no su id, y sin id
+   * no se puede volver a abrir.
+   */
+  folder: PickedFolder | null
 }
 
 /**
@@ -85,7 +100,7 @@ export function searchDocuments(baseUrl: string, text: string): Promise<Document
   return read<{ hits: DocumentHit[] }>(`${baseUrl}/api/search?q=${encodeURIComponent(text)}`).then((body) => body.hits)
 }
 
-export function pickedFrom(space: { code: string; name: string }, item: DocumentItem): PickedDocument {
+export function pickedFrom(space: { code: string; name: string }, item: DocumentItem, folder: PickedFolder | null): PickedDocument {
   return {
     space: space.code,
     spaceName: space.name,
@@ -94,6 +109,7 @@ export function pickedFrom(space: { code: string; name: string }, item: Document
     mimeType: item.mimeType,
     contentType: item.contentType,
     size: item.size,
+    folder,
   }
 }
 
