@@ -1,0 +1,30 @@
+# Dependabot: una vez al mes, GitHub abre PR con las versiones nuevas de las
+# dependencias de npm y de las Actions del workflow de release.
+#
+# Agrupado para no llenar de PR: todas las subidas menores y de parche van en
+# un solo PR; una versión mayor (React, MUI…: puede romper a las aplicaciones)
+# llega en su propio PR, para mirarla aparte. Ojo: estos PR no pasan tests en
+# GitHub (release.yml solo corre con una etiqueta); se prueban en local con
+# comprobar.sh antes del merge, y llegan a las aplicaciones solo al publicar
+# una versión nueva.
+#
+# Mismo criterio que el dependabot.yml de las aplicaciones de la suite.
+
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      menores:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']
