@@ -28,6 +28,7 @@ repositorio y tira de esta librería fijando una versión.
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |
 | `DocumentPicker`, `documentsUrlOf`, `PickedDocument`, `PickedFolder` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
+| `DataTable`, `DataTableColumn`, `exportXlsx`, `formatCell`, `normalizeForSearch` | La tabla común: buscador sin tildes, orden por cabecera, filtros por columna y «Exportar a Excel» (desde la 0.2.11, ver *La tabla común*). |
 | `useAuth`, `useSuiteApp`, `useSessionUser` | Para lo raro; lo normal es no necesitarlos. `useSessionUser` (0.2.8): lo que contestó `/api/me`, dentro de `SessionGate`. |
 
 ### El contrato con el servidor
@@ -146,6 +147,67 @@ const documentsUrl = documentsUrlOf(useSessionUser()?.applications) // null: no 
   onPick={(doc) => { remember({ space: doc.space, folder: doc.folder?.id ?? null }); guardar(doc) }}
   onClose={() => setOpen(false)} />
 ```
+
+### La tabla común (desde la 0.2.11)
+
+`DataTable` es una `Table size="small"` de MUI con lo que repetían tareas,
+proveedores, facturación y listados: **buscador** sin tildes ni mayúsculas
+(cada palabra puede estar en una columna distinta), **orden** pinchando en la
+cabecera (de menor a mayor, de mayor a menor y vuelta al de partida; la
+columna de `initialSort` alterna entre su sentido y el contrario; lo vacío y
+lo que no se entiende, siempre al final), un **desplegable por cada columna filtrable**, «N de M»
+cuando algo filtra y **«Exportar a Excel»** de lo que se ve, en el orden en
+que se ve.
+
+```tsx
+const columns: DataTableColumn<Entry>[] = [
+  { key: 'date', header: 'Fecha', type: 'date', value: (e) => e.date },        // '2026-10-08' o Date
+  { key: 'concept', header: 'Concepto', value: (e) => e.concept },
+  { key: 'category', header: 'Partida', value: (e) => e.category, filterable: true, hideBelow: 'md' },
+  { key: 'amount', header: 'Importe', type: 'money', value: (e) => e.cents },  // en céntimos
+  { key: 'actions', header: '', render: (e) => <IconButton …/> },              // sin value: solo se pinta
+]
+<DataTable label="Apuntes de octubre" rows={entries} columns={columns} rowKey={(e) => e.id}
+  exportFileName="apuntes-2026-10" initialSort={{ key: 'date', direction: 'desc' }}
+  toolbar={<FormControlLabel control={<Switch …/>} label="Ver las archivadas" />} />
+```
+
+- **Todo en el navegador**, sobre las filas que le pasa la aplicación: las
+  tablas de la suite tienen de decenas a pocos cientos de filas y el servidor
+  ya las manda todas. Las pantallas que buscan en el servidor (proveedores,
+  histórico de tareas) no la usan; además son tarjetas, no tablas.
+- **`value` es el dato** (se ordena, se busca, se filtra y se exporta);
+  `render`, si hace falta, solo cambia cómo se pinta. Los tipos: `text`,
+  `number`, `money` (**céntimos**: «1.234,50 €» y en el Excel 1234,5 con
+  formato de euros) y `date` (un día, sin hora). Se busca por lo que se ve:
+  «1.234,50», no «1234».
+- **`columns` fuera del componente** (una constante) o en un `useMemo`: si
+  se crea en cada render, la tabla vuelve a filtrar y ordenar en cada render.
+- **`onRowClick`** abre el detalle de una fila. Los clics en botones, enlaces
+  y campos de la fila no lo disparan. Con el teclado no se llega a una fila:
+  lo que haga tiene que estar también en un botón.
+- **Filtros propios** (archivadas, mes, curso) van en `toolbar` y la aplicación
+  filtra antes de pasar `rows`. Los desplegables de la tabla son para quedarse
+  con un valor de una columna.
+- **Móvil**: las columnas con `hideBelow: 'md'` (o `sm`, `lg`) no se ven por
+  debajo de ese ancho, pero sí salen en el Excel; lo que aún no cabe se
+  desplaza de lado con la primera columna quieta (`stickyFirstColumn`, por
+  defecto sí).
+- **El Excel** lo hace [write-excel-file](https://gitlab.com/catamphetamine/write-excel-file)
+  (MIT, una sola dependencia, `fflate`): cabecera en negrita y fija al bajar,
+  anchos según el texto, números como número y fechas como fecha. **Se carga
+  con `import()` al pulsar el botón**, así que Vite la deja en un trozo aparte
+  (unos 19 KB comprimida) que solo descarga quien exporta. Es la **primera
+  dependencia de verdad** de la librería (lo demás son `peerDependencies`):
+  npm la instala sola en cada aplicación al subir a la 0.2.11, y su
+  `package-lock.json` gana `write-excel-file` y `fflate`. Se descartaron
+  SheetJS (la versión gratuita no pone negritas y la de npm está anticuada y
+  con vulnerabilidades), exceljs (sin mantener desde 2024 y con CVE sin
+  parche) y el Data Grid de MUI X (exportar a Excel es de pago). No hace
+  autofiltro de Excel: el filtro ya está en la pantalla.
+- `exportXlsx(rows, columns, fichero, hoja)` sirve suelto, para exportar sin
+  pintar la tabla. `normalizeForSearch` es el «sin tildes» de la ayuda, para
+  quien tenga su propia copia.
 
 ### Lo que se ha dejado fuera, a propósito
 

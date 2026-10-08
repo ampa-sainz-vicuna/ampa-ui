@@ -29,3 +29,11 @@ export { saveFile } from './api/saveFile.ts'
 // Adjuntar desde Documentos (desde la 0.2.8)
 export { DocumentPicker } from './documents/DocumentPicker.tsx'
 export { documentsUrlOf, type PickedDocument, type PickedFolder } from './documents/documentsApi.ts'
+
+// La tabla común: buscar, filtrar, ordenar y exportar a Excel (desde la 0.2.11)
+export { DataTable, type DataTableSort } from './table/DataTable.tsx'
+export { formatCell, type CellValue, type ColumnType, type DataTableColumn, type HideBelow } from './table/columns.ts'
+export { exportXlsx } from './table/exportXlsx.ts'
+// Sin tildes ni mayúsculas, para buscar: «Cómo» → «como». Tres aplicaciones
+// tienen hoy su propia copia de esta función.
+export { normalize as normalizeForSearch } from './help/search.ts'
