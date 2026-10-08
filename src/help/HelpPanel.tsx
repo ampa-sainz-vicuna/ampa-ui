@@ -32,6 +32,7 @@ const LABELS: Record<string, string> = {
   tareas: 'Tareas',
   crm: 'Proveedores',
   documentos: 'Documentos',
+  familias: 'Familias',
 }
 
 interface Props {

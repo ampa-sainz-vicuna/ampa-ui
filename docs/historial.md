@@ -5,6 +5,14 @@ resumido allí.
 
 ---
 
+## 0.2.12, sin publicar (08/10/2026): icono y nombre de «familias»
+
+Alta de la aplicación nueva `familias` (`ampa-familias`, en construcción): icono
+`FamilyRestroomRounded` en `src/shell/ApplicationIcon.tsx` y «Familias» en
+`LABELS` de `src/help/HelpPanel.tsx`. Solo añade: sube la tercera cifra. El
+portal ya la tiene en su catálogo (`suite.yaml`) pero sigue en la 0.2.10 de
+`@ampa/ui` hasta que esta release exista.
+
 ## 0.2.11, publicada (08/10/2026): la tabla común con Excel
 
 Commit `dc400ee`, etiqueta `v0.2.11`. La release ya tiene el

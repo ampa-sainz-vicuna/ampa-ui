@@ -27,6 +27,7 @@ repositorio y tira de esta librería fijando una versión.
 | `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |
+| `ApplicationIcon` | El icono de cada aplicación por su código del catálogo del portal. Desde la 0.2.12 también el de `familias` (y su nombre «Familias» en la ayuda). |
 | `DocumentPicker`, `documentsUrlOf`, `PickedDocument`, `PickedFolder` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
 | `DataTable`, `DataTableColumn`, `exportXlsx`, `formatCell`, `normalizeForSearch` | La tabla común: buscador sin tildes, orden por cabecera, filtros por columna y «Exportar a Excel» (desde la 0.2.11, ver *La tabla común*). |
 | `useAuth`, `useSuiteApp`, `useSessionUser` | Para lo raro; lo normal es no necesitarlos. `useSessionUser` (0.2.8): lo que contestó `/api/me`, dentro de `SessionGate`. |

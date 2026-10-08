@@ -2,6 +2,7 @@ import AccessTimeRounded from '@mui/icons-material/AccessTimeRounded'
 import AccountBalanceWalletRounded from '@mui/icons-material/AccountBalanceWalletRounded'
 import AppsRounded from '@mui/icons-material/AppsRounded'
 import FactCheckRounded from '@mui/icons-material/FactCheckRounded'
+import FamilyRestroomRounded from '@mui/icons-material/FamilyRestroomRounded'
 import FolderCopyRounded from '@mui/icons-material/FolderCopyRounded'
 import HomeRounded from '@mui/icons-material/HomeRounded'
 import StorefrontRounded from '@mui/icons-material/StorefrontRounded'
@@ -22,6 +23,7 @@ const ICONS: Record<string, ComponentType<SvgIconProps>> = {
   tareas: ViewKanbanRounded,
   crm: StorefrontRounded,
   documentos: FolderCopyRounded,
+  familias: FamilyRestroomRounded,
 }
 
 interface Props extends SvgIconProps {
