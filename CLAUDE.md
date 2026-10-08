@@ -67,8 +67,10 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.11** (08/10/2026; commit `dc400ee`, etiqueta `v0.2.11`,
-release con su `.tgz`; solo añade): **`DataTable`** (`src/table/`), tabla común
+Publicada la **0.2.12** (08/10/2026; commit `2de7871`, etiqueta `v0.2.12`,
+release con su `.tgz`; solo añade): icono `FamilyRestroomRounded` y «Familias»
+en la ayuda para la aplicación nueva `familias`. Antes, la **0.2.11**
+(`dc400ee`): **`DataTable`** (`src/table/`), tabla común
 con búsqueda sin tildes, orden, un filtro por columna `filterable`, «N de M»,
 ranura `toolbar`, `hideBelow`, primera columna fija en móvil, `onRowClick` y
 **«Exportar a Excel»** (`exportXlsx`). Columnas: text, number, money
@@ -76,7 +78,7 @@ ranura `toolbar`, `hideBelow`, primera columna fija en móvil, `onRowClick` y
 tests, lint, tipos, build y audit en verde. README: «La tabla común». Antes:
 `DocumentPicker` abre en una carpeta (0.2.10), `AppShell home` (0.2.9),
 `DocumentPicker` y `documentsUrlOf` (0.2.8; **solo lee** de Documentos).
-**Quién usa qué** (08/10/2026): ninguna aplicación ha subido aún a la 0.2.11;
+**Quién usa qué** (08/10/2026): ninguna aplicación ha subido aún a la 0.2.12;
 todas siguen en la 0.2.10 salvo documentos, en la 0.2.9.
 Las versiones anteriores, en el historial.
 
@@ -86,7 +88,9 @@ Las versiones anteriores, en el historial.
   facturación (`entries/MonthEntries.tsx`), luego el catálogo de listados
   (`CatalogPage`).
 - **Probarla en pantalla** (del usuario): nadie la ha visto aún en navegador.
-- documentos sube a la 0.2.11 cuando se toque.
+- **El portal y `ampa-familias` suben a la 0.2.12** (icono y nombre de
+  «Familias»). Las demás no necesitan subir por esto.
+- documentos sube a la 0.2.11 o posterior cuando se toque.
 
 ## Trampas vigentes
 

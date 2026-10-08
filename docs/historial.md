@@ -5,13 +5,18 @@ resumido allí.
 
 ---
 
-## 0.2.12, sin publicar (08/10/2026): icono y nombre de «familias»
+## 0.2.12, publicada (08/10/2026): icono y nombre de «familias»
+
+Commit `2de7871`, etiqueta `v0.2.12`. La Action `release.yml` terminó bien y la
+release tiene el `ampa-ui-0.2.12.tgz`. Tests (`comprobar.sh todo`): front 109,
+lint, typecheck, build y audit en verde.
 
 Alta de la aplicación nueva `familias` (`ampa-familias`, en construcción): icono
 `FamilyRestroomRounded` en `src/shell/ApplicationIcon.tsx` y «Familias» en
 `LABELS` de `src/help/HelpPanel.tsx`. Solo añade: sube la tercera cifra. El
-portal ya la tiene en su catálogo (`suite.yaml`) pero sigue en la 0.2.10 de
-`@ampa/ui` hasta que esta release exista.
+portal ya la tiene en su catálogo (`suite.yaml`) pero seguía en la 0.2.10 de
+`@ampa/ui`: ahora puede subir a la 0.2.12, igual que familias. Las demás
+aplicaciones no necesitan subir por esto.
 
 ## 0.2.11, publicada (08/10/2026): la tabla común con Excel
 
