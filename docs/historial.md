@@ -5,6 +5,22 @@ resumido allí.
 
 ---
 
+## 08/10/2026: aprobada la tabla común con exportación a Excel (pendiente)
+
+- Publicada la 0.2.10; tabla de versiones puesta al día (todas la 0.2.10
+  salvo documentos, en la 0.2.9).
+- **Aprobado por el usuario**, para una sesión aparte: un componente de tabla
+  en `@ampa/ui` con orden, filtros, búsqueda sin tildes y botón de exportar a
+  `.xlsx`.
+- **Por qué**: tareas (histórico), Proveedores y facturación repiten tablas y
+  filtros, y casi ninguna exporta.
+- Solo añade, así que sube la tercera cifra.
+- **A decidir al empezar**: la librería de Excel (verificar licencia y
+  tamaño; SheetJS frente a exceljs u otra) y si la exportación se hace en el
+  navegador.
+
+---
+
 ## 0.2.9, publicada (04/10/2026)
 
 Commit `1ba5fa9`, etiqueta `v0.2.9`, release construida por la Action. Solo

@@ -66,8 +66,9 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.9** (04/10/2026; commit `1ba5fa9`, etiqueta `v0.2.9`; solo
-añade): `AppShell` acepta `home?: { href, label }` para que el logo lleve a
+Publicada la **0.2.10** (07/10/2026; commit `e001f97`, etiqueta `v0.2.10`;
+solo añade): `DocumentPicker` puede abrir en una carpeta concreta y dice de
+qué carpeta salió lo elegido. La 0.2.9 (04/10/2026, `1ba5fa9`): `AppShell` acepta `home?: { href, label }` para que el logo lleve a
 otro sitio (por defecto, al portal); lo usan las pantallas públicas de
 Documentos (logo a `https://ampasainzvicuna.com`). 79 tests, lint, tipos y
 build en verde. Incluye la 0.2.8: `DocumentPicker` (`src/documents/`; espacios,
@@ -75,12 +76,16 @@ carpetas y búsqueda; devuelve `PickedDocument`), `documentsUrlOf(applications)`
 y el export de `useSessionUser`. **Solo lee** de Documentos
 (`credentials: 'include'`); no escribe allí: lo apunta el servidor de la
 aplicación. README: «Adjuntar desde Documentos».
-**Quién usa qué**: documentos 0.2.9; tareas, proveedores y facturación 0.2.8;
-portal 0.2.7; fichajes y listados 0.2.5. Las versiones anteriores, en el
-historial.
+**Quién usa qué** (08/10/2026): todas la 0.2.10 salvo documentos, en la 0.2.9.
+Las versiones anteriores, en el historial.
 
-**Pendiente**: las demás aplicaciones suben cuando se toquen (proveedores y
-facturación, al adjuntar desde Documentos).
+**Pendiente**:
+- documentos sube a la 0.2.10 cuando se toque.
+- **Tabla común con exportación a Excel** (aprobada el 08/10/2026, para una
+  sesión aparte): orden, filtros, búsqueda sin tildes y botón «exportar a
+  .xlsx». Solo añade: sube la tercera cifra. A decidir al empezar: librería de
+  Excel (verificar licencia y tamaño; SheetJS, exceljs u otra) y si se exporta
+  en el navegador. Motivo y detalle en el [historial](docs/historial.md).
 
 ## Trampas vigentes
 
