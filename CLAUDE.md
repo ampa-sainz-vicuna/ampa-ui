@@ -28,7 +28,8 @@ aplicaciones: comentarios que explican el porqué, en español.
 ## Stack (verificado el 24/09/2026)
 
 React 19.3, TypeScript 6.0.3, MUI 9.4, Vitest 5.0 + Testing Library, oxlint.
-Sin Vite: se compila con `tsc` a `dist/` (JavaScript + `.d.ts`). Node 22 en
+**write-excel-file 4.1.1** (MIT; primera dependencia de verdad, no peer; se
+carga con `import()` al exportar, variante `/universal`). Sin Vite: se compila con `tsc` a `dist/` (JavaScript + `.d.ts`). Node 22 en
 Docker (`node:22-alpine`); **no hay Node en Windows**. Sin puertos: no se
 levanta.
 
@@ -66,28 +67,34 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.10** (07/10/2026; commit `e001f97`, etiqueta `v0.2.10`;
-solo añade): `DocumentPicker` puede abrir en una carpeta concreta y dice de
-qué carpeta salió lo elegido. La 0.2.9 (04/10/2026, `1ba5fa9`): `AppShell` acepta `home?: { href, label }` para que el logo lleve a
-otro sitio (por defecto, al portal); lo usan las pantallas públicas de
-Documentos (logo a `https://ampasainzvicuna.com`). 79 tests, lint, tipos y
-build en verde. Incluye la 0.2.8: `DocumentPicker` (`src/documents/`; espacios,
-carpetas y búsqueda; devuelve `PickedDocument`), `documentsUrlOf(applications)`
-y el export de `useSessionUser`. **Solo lee** de Documentos
-(`credentials: 'include'`); no escribe allí: lo apunta el servidor de la
-aplicación. README: «Adjuntar desde Documentos».
-**Quién usa qué** (08/10/2026): todas la 0.2.10 salvo documentos, en la 0.2.9.
+Publicada la **0.2.11** (08/10/2026; commit `dc400ee`, etiqueta `v0.2.11`,
+release con su `.tgz`; solo añade): **`DataTable`** (`src/table/`), tabla común
+con búsqueda sin tildes, orden, un filtro por columna `filterable`, «N de M»,
+ranura `toolbar`, `hideBelow`, primera columna fija en móvil, `onRowClick` y
+**«Exportar a Excel»** (`exportXlsx`). Columnas: text, number, money
+(céntimos), date. También exporta `formatCell` y `normalizeForSearch`. 109
+tests, lint, tipos, build y audit en verde. README: «La tabla común». Antes:
+`DocumentPicker` abre en una carpeta (0.2.10), `AppShell home` (0.2.9),
+`DocumentPicker` y `documentsUrlOf` (0.2.8; **solo lee** de Documentos).
+**Quién usa qué** (08/10/2026): ninguna aplicación ha subido aún a la 0.2.11;
+todas siguen en la 0.2.10 salvo documentos, en la 0.2.9.
 Las versiones anteriores, en el historial.
 
 **Pendiente**:
-- documentos sube a la 0.2.10 cuando se toque.
-- **Tabla común con exportación a Excel** (aprobada el 08/10/2026, para una
-  sesión aparte): orden, filtros, búsqueda sin tildes y botón «exportar a
-  .xlsx». Solo añade: sube la tercera cifra. A decidir al empezar: librería de
-  Excel (verificar licencia y tamaño; SheetJS, exceljs u otra) y si se exporta
-  en el navegador. Motivo y detalle en el [historial](docs/historial.md).
+- **Adoptar `DataTable`** (de Claude, en otra sesión, cuando el usuario lo
+  pida; skill `subir-dependencia`): primero los apuntes del mes de
+  facturación (`entries/MonthEntries.tsx`), luego el catálogo de listados
+  (`CatalogPage`).
+- **Probarla en pantalla** (del usuario): nadie la ha visto aún en navegador.
+- documentos sube a la 0.2.11 cuando se toque.
 
 ## Trampas vigentes
+
+- **Tabla/Excel**: write-excel-file pasa las `Date` a serial en UTC: darle
+  `Date.UTC` del día, no la medianoche de Madrid. `Intl` es-ES no agrupa
+  4 cifras: `useGrouping: 'always'`. En tests, ` ` escapado (oxlint
+  prohíbe el literal) y Testing Library lo normaliza a espacio. Un
+  `SxProps<Theme>` no cabe en un array de `sx`: objetos `as const`.
 
 - **`npm install github:…#etiqueta` no funciona en `node:22-alpine`**: no trae
   `git`. Por eso se instala por la URL de la release.

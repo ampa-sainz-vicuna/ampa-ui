@@ -5,6 +5,63 @@ resumido allí.
 
 ---
 
+## 0.2.11, publicada (08/10/2026): la tabla común con Excel
+
+Commit `dc400ee`, etiqueta `v0.2.11`. La release ya tiene el
+`ampa-ui-0.2.11.tgz` (la Action terminó). Solo añade: sube la tercera cifra.
+Sustituye al pendiente de la entrada siguiente.
+
+- **Qué es**: `DataTable` (`src/table/DataTable.tsx`), `DataTableColumn` y
+  tipos (`src/table/columns.ts`), `exportXlsx` (`src/table/exportXlsx.ts`).
+  Búsqueda sin tildes (cada palabra puede estar en una columna distinta),
+  orden por cabecera (asc, desc, orden de partida; la columna de `initialSort`
+  alterna entre su sentido y el contrario; vacíos e ilegibles al final), un
+  desplegable por cada columna `filterable`, «N de M», ranura `toolbar` para
+  filtros propios, `hideBelow` por columna, primera columna fija con
+  desplazamiento lateral en móvil, `onRowClick` (los clics en botones o
+  enlaces de la fila no lo disparan) y «Exportar a Excel» de lo visible y en
+  su orden. Tipos de columna: text, number, money (céntimos), date
+  (`'YYYY-MM-DD'` o `Date`). Exporta también `formatCell` y
+  `normalizeForSearch` (el de `help/search.ts`; crm, listados y tareas tienen
+  su propia copia).
+- **Decisiones del usuario (08/10/2026)**, todas las recomendadas:
+  - Librería **write-excel-file 4.1.1** (MIT, una dependencia, fflate).
+    Descartadas: SheetJS (la versión gratuita no pone negrita y la de npm
+    está anticuada y vulnerable), exceljs (abandonada, 4 CVE de 08/2026 sin
+    parche) y el Data Grid de MUI X (cobra la exportación a Excel).
+  - Todo **en el navegador**. Proveedores y el histórico de tareas buscan en
+    el servidor y son tarjetas: no la usan.
+  - **Móvil**: columnas ocultables y desplazamiento lateral.
+  - **Filtros**: un desplegable por columna. Sin autofiltro de Excel: el
+    filtro ya está en la pantalla.
+- **Técnico**: write-excel-file se carga con `import()` al pulsar Exportar
+  (trozo aparte de unos 19 KB gzip) y se usa `/universal` porque funciona
+  también en Node, donde corren los tests. Es la primera dependencia de verdad
+  de `@ampa/ui`: al subir a la 0.2.11, el `package-lock` de cada aplicación
+  gana write-excel-file y fflate.
+- **Trampas**: (1) write-excel-file convierte las `Date` a serial de Excel en
+  UTC: dar `Date.UTC` del día; con la medianoche de Madrid saldría el día
+  anterior. (2) `Intl` es-ES no pone punto de miles con 4 cifras
+  («1234,50 €»): `useGrouping: 'always'`. (3) Testing Library cambia el
+  espacio duro antes del € por uno normal: `getByText('45,50 €')`. (4) Un
+  U+00A0 literal en un fichero lo marca oxlint (`no-irregular-whitespace`): en
+  los tests, el escape ` `. (5) Un `SxProps<Theme>` no cabe en un array
+  de `sx`: objetos `as const` sin anotar.
+- **Revisión** con `revisor-suite`: nada grave; 9 avisos arreglados (ciclo de
+  orden con `initialSort`, filtro con valor que ya no existe, clics en botones
+  de la fila, `aria-live` siempre montado, hover en la columna fija, orden con
+  datos ilegibles, fechas imposibles como 2026-02-31, nombre de hoja vacío,
+  barras en el nombre del fichero).
+- **Tests**: front 109, lint, typecheck, build y audit en verde. README: nueva
+  sección «La tabla común (desde la 0.2.11)» y fila en «Qué hay dentro».
+- **Quién usa qué**: ninguna aplicación ha subido aún (todas en la 0.2.10
+  salvo documentos, en la 0.2.9).
+- **Pendiente**: adoptar `DataTable` (facturación, apuntes del mes; luego el
+  catálogo de listados, con su buscador sin tildes propio) con
+  `subir-dependencia`; que el usuario la pruebe en pantalla.
+
+---
+
 ## 08/10/2026: aprobada la tabla común con exportación a Excel (pendiente)
 
 - Publicada la 0.2.10; tabla de versiones puesta al día (todas la 0.2.10
