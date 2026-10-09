@@ -67,19 +67,17 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.12** (08/10/2026; commit `2de7871`, etiqueta `v0.2.12`,
-release con su `.tgz`; solo añade): icono `FamilyRestroomRounded` y «Familias»
-en la ayuda para la aplicación nueva `familias`. Antes, la **0.2.11**
-(`dc400ee`): **`DataTable`** (`src/table/`), tabla común
+Publicada la **0.2.13** (09/10/2026; commit `c7d708d`, etiqueta `v0.2.13`,
+release con su `.tgz`; solo añade): el clic que abre un desplegable ya no
+elige una opción (`src/brand/clickToChoose.ts`, en el tema como
+`MuiMenu.defaultProps`). Antes, la **0.2.12**: icono y «Familias». La
+**0.2.11** (`dc400ee`): **`DataTable`** (`src/table/`), tabla común
 con búsqueda sin tildes, orden, un filtro por columna `filterable`, «N de M»,
 ranura `toolbar`, `hideBelow`, primera columna fija en móvil, `onRowClick` y
 **«Exportar a Excel»** (`exportXlsx`). Columnas: text, number, money
 (céntimos), date. También exporta `formatCell` y `normalizeForSearch`. 109
-tests, lint, tipos, build y audit en verde. README: «La tabla común». Antes:
-`DocumentPicker` abre en una carpeta (0.2.10), `AppShell home` (0.2.9),
-`DocumentPicker` y `documentsUrlOf` (0.2.8; **solo lee** de Documentos).
-**Quién usa qué** (08/10/2026): ninguna aplicación ha subido aún a la 0.2.12;
-todas siguen en la 0.2.10 salvo documentos, en la 0.2.9.
+tests, lint, tipos, build y audit en verde. README: «La tabla común».
+**Quién usa qué** (09/10/2026): **todas** las aplicaciones están en la 0.2.13.
 Las versiones anteriores, en el historial.
 
 **Pendiente**:
@@ -88,11 +86,15 @@ Las versiones anteriores, en el historial.
   facturación (`entries/MonthEntries.tsx`), luego el catálogo de listados
   (`CatalogPage`).
 - **Probarla en pantalla** (del usuario): nadie la ha visto aún en navegador.
-- **El portal y `ampa-familias` suben a la 0.2.12** (icono y nombre de
-  «Familias»). Las demás no necesitan subir por esto.
-- documentos sube a la 0.2.11 o posterior cuando se toque.
+- **Desplegables** (del usuario): comprobar en pantalla, en varias
+  aplicaciones, que abren a la primera (0.2.13).
 
 ## Trampas vigentes
+
+- **Select de MUI 9**: abre al pulsar; si el menú sube encima del campo,
+  soltar el botón sobre una opción (pasados 200 ms) la elegía. Lo evita el
+  tema (`clickToChoose.ts`); no hace falta arreglarlo campo a campo. Funciona
+  porque `resolveProps` mezcla `slotProps` del tema y del componente.
 
 - **Tabla/Excel**: write-excel-file pasa las `Date` a serial en UTC: darle
   `Date.UTC` del día, no la medianoche de Madrid. `Intl` es-ES no agrupa

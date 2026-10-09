@@ -5,6 +5,33 @@ resumido allí.
 
 ---
 
+## 0.2.13, publicada (09/10/2026): el clic que abre un desplegable ya no elige
+
+Commit `c7d708d`, etiqueta `v0.2.13`, release con su `.tgz`. Solo añade: sube la
+tercera cifra. Hecho con permiso del usuario para commit y despliegue.
+
+- **Por qué**: MUI 9 abre el `Select` al pulsar. Si el menú no cabe debajo y lo
+  sube encima del campo, soltar el botón sobre una opción (pasados 200 ms) la
+  elegía y cerraba el menú: había que abrirlo dos veces. El usuario lo seguía
+  viendo en varias aplicaciones. Tareas lo tenía arreglado campo a campo
+  (`CLICK_TO_CHOOSE`, 27/09/2026).
+- **Qué**: ahora va en el tema, `src/brand/clickToChoose.ts`, como
+  `MuiMenu.defaultProps` (ignora el `mouseup` que llega a la lista sin
+  `mousedown` dentro; se reinicia en `slotProps.transition.onEntering`).
+  Funciona porque `resolveProps` de MUI mezcla los `slotProps` del tema y del
+  componente, ranura a ranura.
+- **Test**: `src/brand/clickToChoose.test.tsx` (3; dos fallan sin el arreglo).
+  ampa-ui no tiene jest-dom: matchers de Vitest. README: fila en «Qué hay
+  dentro».
+- **Comprobado** (`comprobar.sh todo`): 112 tests de front, lint, tipos, build y
+  audit en verde.
+- **Quién la usa**: todas las aplicaciones (fichajes, listados, facturacion,
+  portal, tareas, crm, documentos, familias) subieron a la 0.2.13 el 09/10/2026.
+- **Queda**: adoptar `DataTable`, probarla en pantalla (usuario) y que el
+  usuario compruebe que los desplegables abren a la primera.
+
+---
+
 ## 0.2.12, publicada (08/10/2026): icono y nombre de «familias»
 
 Commit `2de7871`, etiqueta `v0.2.12`. La Action `release.yml` terminó bien y la
