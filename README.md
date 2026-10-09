@@ -27,6 +27,7 @@ repositorio y tira de esta librería fijando una versión.
 | `apiRequest`, `apiDownload`, `ApiError`, `messageOf` | Hablar con el servidor: JSON o formulario con ficheros, errores con su código y los mensajes del servidor tal cual. La sesión va sola, en la cookie. |
 | `saveFile` | Guardar en el disco un fichero descargado con `apiDownload`. |
 | `theme`, `BRAND_RED`, `BRAND_NAVY`, `AMPA_LOGO` | La marca, por si una pantalla la necesita suelta. |
+| (en el tema) | Desde la 0.2.13, **el clic que abre un desplegable no elige una opción**: con el menú subido encima del campo, soltar el botón elegía y cerraba, y había que abrirlo dos veces. Lo llevan todos los `Select` sin tocar nada (`src/brand/clickToChoose.ts`). |
 | `ApplicationIcon` | El icono de cada aplicación por su código del catálogo del portal. Desde la 0.2.12 también el de `familias` (y su nombre «Familias» en la ayuda). |
 | `DocumentPicker`, `documentsUrlOf`, `PickedDocument`, `PickedFolder` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
 | `DataTable`, `DataTableColumn`, `exportXlsx`, `formatCell`, `normalizeForSearch` | La tabla común: buscador sin tildes, orden por cabecera, filtros por columna y «Exportar a Excel» (desde la 0.2.11, ver *La tabla común*). |

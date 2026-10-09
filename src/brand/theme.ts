@@ -1,4 +1,5 @@
 import { alpha, createTheme } from '@mui/material/styles'
+import { CLICK_TO_CHOOSE } from './clickToChoose.ts'
 
 /**
  * Material Design con los colores del AMPA, sacados de los píxeles del logo
@@ -220,6 +221,10 @@ export const theme = createTheme({
       styleOverrides: {
         paper: { borderRadius: 14, border: `1px solid ${HAIRLINE}`, boxShadow: FLOATING_SHADOW },
       },
+    },
+    // El clic que abre un desplegable no elige una opción (ver clickToChoose.ts).
+    MuiMenu: {
+      defaultProps: CLICK_TO_CHOOSE,
     },
     MuiMenuItem: {
       styleOverrides: {
