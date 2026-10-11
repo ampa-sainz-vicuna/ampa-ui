@@ -78,6 +78,8 @@ ranura `toolbar`, `hideBelow`, primera columna fija en móvil, `onRowClick` y
 (céntimos), date. También exporta `formatCell` y `normalizeForSearch`. 109
 tests, lint, tipos, build y audit en verde. README: «La tabla común».
 **Quién usa qué** (09/10/2026): **todas** las aplicaciones están en la 0.2.13.
+**Comprobado por el usuario el 11/10/2026**: los desplegables abren a la
+primera en las aplicaciones.
 Las versiones anteriores, en el historial.
 
 **Pendiente**:
@@ -86,8 +88,6 @@ Las versiones anteriores, en el historial.
   facturación (`entries/MonthEntries.tsx`), luego el catálogo de listados
   (`CatalogPage`).
 - **Probarla en pantalla** (del usuario): nadie la ha visto aún en navegador.
-- **Desplegables** (del usuario): comprobar en pantalla, en varias
-  aplicaciones, que abren a la primera (0.2.13).
 
 ## Trampas vigentes
 

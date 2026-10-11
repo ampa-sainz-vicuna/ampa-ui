@@ -5,6 +5,14 @@ resumido allí.
 
 ---
 
+## 11/10/2026: desplegables comprobados
+
+El usuario confirma que, con la 0.2.13, los desplegables abren a la primera en
+las aplicaciones. Sale del Pendiente. Siguen abiertos: adoptar `DataTable` y
+probarla en pantalla.
+
+---
+
 ## 0.2.13, publicada (09/10/2026): el clic que abre un desplegable ya no elige
 
 Commit `c7d708d`, etiqueta `v0.2.13`, release con su `.tgz`. Solo añade: sube la
