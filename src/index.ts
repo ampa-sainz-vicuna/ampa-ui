@@ -6,6 +6,8 @@
 // La marca
 export { AMPA_LOGO } from './brand/logo.ts'
 export { BRAND_NAVY, BRAND_RED, theme } from './brand/theme.ts'
+// Los colores que dicen algo y los de sección (desde la 0.2.14)
+export { ACCENTS, toneColors, type Accent, type Tone, type ToneColors } from './brand/tones.ts'
 
 // La aplicación
 export { SuiteRoot } from './app/SuiteRoot.tsx'
@@ -21,6 +23,11 @@ export { AppShell } from './shell/AppShell.tsx'
 export { ApplicationIcon } from './shell/ApplicationIcon.tsx'
 export { CardTitle } from './shell/CardTitle.tsx'
 export { ConfirmDialog } from './shell/ConfirmDialog.tsx'
+// Estados, recuadros, cabecera de pantalla e icono de pestaña (desde la 0.2.14)
+export { PageHeader } from './shell/PageHeader.tsx'
+export { SectionIcon } from './shell/SectionIcon.tsx'
+export { StatTile } from './shell/StatTile.tsx'
+export { StatusChip } from './shell/StatusChip.tsx'
 
 // La API
 export { ApiError, apiDownload, apiRequest, messageOf, type DownloadedFile, type RequestOptions } from './api/client.ts'

@@ -52,7 +52,7 @@ describe('SessionGate', () => {
     renderGate()
 
     expect(await screen.findByText('Pantalla de administración')).toBeTruthy()
-    expect(screen.getByText('Alberto')).toBeTruthy()
+    expect(screen.getAllByText('Alberto').length).toBeGreaterThan(0)
     const [url, init] = fetchMock.mock.calls[0]
     expect(url).toBe('/api/me')
     // La sesión es la cookie de la suite: nada que mandar a mano.

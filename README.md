@@ -31,6 +31,11 @@ repositorio y tira de esta librería fijando una versión.
 | `ApplicationIcon` | El icono de cada aplicación por su código del catálogo del portal. Desde la 0.2.12 también el de `familias` (y su nombre «Familias» en la ayuda). |
 | `DocumentPicker`, `documentsUrlOf`, `PickedDocument`, `PickedFolder` | Elegir un fichero de **Documentos** para adjuntarlo (desde la 0.2.8, ver *Adjuntar desde Documentos*). |
 | `DataTable`, `DataTableColumn`, `exportXlsx`, `formatCell`, `normalizeForSearch` | La tabla común: buscador sin tildes, orden por cabecera, filtros por columna y «Exportar a Excel» (desde la 0.2.11, ver *La tabla común*). |
+| `StatusChip`, `toneColors`, `Tone` | Desde la 0.2.14, **los colores que dicen algo**, iguales en toda la suite: `success` (está bien), `warning` (falta algo), `error` (hay que actuar), `info` (novedad) y `neutral` (no cuenta). Fondo suave y texto oscuro del mismo color, siempre con una palabra (`src/brand/tones.ts`). |
+| `StatTile` | Un recuadro de lo que pide atención encima de una lista («12 con deuda»): la cifra en un cuadrado de su color y, al pincharlo, filtra (0.2.14). |
+| `PageHeader` | La cabecera de una pantalla: icono de la sección en un círculo de su color, el título (el `h1`) y el botón principal, sobre un velo suave del rojo del AMPA (0.2.14). |
+| `SectionIcon`, `ACCENTS`, `Accent` | Colores de sección, por su nombre (`teal`, `orange`…): cada aplicación da uno a cada pestaña, en la `Tab` con `icon={<SectionIcon accent="teal">…</SectionIcon>}` e `iconPosition="start"`, y el mismo a su `PageHeader` (0.2.14). Nunca para el texto. |
+| (en el tema y la barra) | Desde la 0.2.14, fondo algo más cálido con velos del rojo del AMPA, la pestaña elegida con fondo rojo suave, la cabecera de las tablas teñida de azul y, en la barra, **«AMPA Sainz de Vicuña»** encima del nombre de la aplicación (quien ha entrado, a la derecha; en el móvil, como antes). `DataTable` gana `mutedRow` para atenuar filas que no cuentan. |
 | `useAuth`, `useSuiteApp`, `useSessionUser` | Para lo raro; lo normal es no necesitarlos. `useSessionUser` (0.2.8): lo que contestó `/api/me`, dentro de `SessionGate`. |
 
 ### El contrato con el servidor

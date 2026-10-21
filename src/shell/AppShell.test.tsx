@@ -10,8 +10,15 @@ describe('AppShell', () => {
     renderInSuite(<AppShell userName="Alberto">El contenido</AppShell>)
 
     expect(screen.getByText('Pruebas del AMPA')).toBeTruthy()
-    expect(screen.getByText('Alberto')).toBeTruthy()
+    // Dos veces: debajo de la aplicación en el móvil y a la derecha en lo demás.
+    expect(screen.getAllByText('Alberto')).toHaveLength(2)
     expect(screen.getByRole('main').textContent).toBe('El contenido')
+  })
+
+  it('dice de quién es la casa: el AMPA Sainz de Vicuña', () => {
+    renderInSuite(<AppShell>Contenido</AppShell>)
+
+    expect(screen.getByText('AMPA Sainz de Vicuña')).toBeTruthy()
   })
 
   it('el botón de salir llama a onSignOut', async () => {

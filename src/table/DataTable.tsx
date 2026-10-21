@@ -70,6 +70,11 @@ interface Props<Row> {
    * defecto, sí.
    */
   stickyFirstColumn?: boolean
+  /**
+   * Las filas que no cuentan (una familia de baja), atenuadas: se ven, pero
+   * el ojo pasa de largo (desde la 0.2.14).
+   */
+  mutedRow?: (row: Row) => boolean
 }
 
 /** Las columnas de números van a la derecha, para que las cifras queden alineadas. */
@@ -97,6 +102,13 @@ const CLICKABLE_ROW = {
   },
 } as const
 
+// Una fila que no cuenta: el texto en gris, pero sin bajar la opacidad de lo
+// que lleva dentro, para que una etiqueta que pide atención («Pide el
+// borrado») se siga viendo entera y todo pase el contraste AA.
+const MUTED_ROW = {
+  '& > td': { color: 'text.secondary' },
+} as const
+
 /**
  * La tabla común de la suite: buscador sin tildes, orden pinchando en la
  * cabecera, un desplegable por cada columna filtrable y «Exportar a Excel» de
@@ -122,6 +134,7 @@ export function DataTable<Row>({
   noMatchText = 'Nada coincide con la búsqueda o los filtros.',
   onRowClick,
   stickyFirstColumn = true,
+  mutedRow,
 }: Props<Row>) {
   const [query, setQuery] = useState('')
   const [filters, setFilters] = useState<Record<string, string>>({})
@@ -328,7 +341,7 @@ export function DataTable<Row>({
                   key={rowKey(row)}
                   hover={onRowClick !== undefined}
                   onClick={onRowClick ? (event) => handleRowClick(event, row) : undefined}
-                  sx={onRowClick ? CLICKABLE_ROW : undefined}
+                  sx={[onRowClick ? CLICKABLE_ROW : {}, mutedRow?.(row) ? MUTED_ROW : {}]}
                 >
                   {columns.map((column, index) => (
                     <TableCell

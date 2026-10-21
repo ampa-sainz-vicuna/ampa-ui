@@ -49,6 +49,12 @@ interface Props {
  *
  * Desde la 0.2.5, con sesión, también el botón de la ayuda: las preguntas
  * frecuentes que sirve el portal (`GET /api/ayuda`), con buscador.
+ *
+ * Desde la 0.2.14, que se vea de quién es la casa (pedido por el usuario el
+ * 21/10/2026): el logo algo más grande y, encima del nombre de la
+ * aplicación, «AMPA Sainz de Vicuña» en rojo. Quien ha entrado pasa a la
+ * derecha, junto a los botones. En el móvil no cabe todo: sigue como antes
+ * (aplicación y, debajo, quién ha entrado).
  */
 export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', home, children }: Props) {
   const { name, portalUrl } = useSuiteApp()
@@ -74,20 +80,35 @@ export function AppShell({ userName, onSignOut, tabs, maxWidth = 'sm', home, chi
               aria-label={logoLink.label}
               sx={{ borderRadius: 2, p: 0.5, m: -0.5, '&:hover': { bgcolor: 'action.hover' } }}
             >
-              <Box component="img" src={AMPA_LOGO} alt="" sx={{ height: 36, width: 'auto', display: 'block' }} />
+              <Box component="img" src={AMPA_LOGO} alt="" sx={{ height: { xs: 36, sm: 42 }, width: 'auto', display: 'block' }} />
             </ButtonBase>
           </Tooltip>
           <Divider orientation="vertical" flexItem sx={{ my: 1.75 }} />
-          {/* Desde la 0.2.4, primero dónde se está (la aplicación, en negrita) y
-              debajo, en gris, quién ha entrado: lo que se busca de un vistazo. */}
+          {/* Encima, de quién es la casa; luego dónde se está (la aplicación,
+              en negrita). Quién ha entrado va debajo en el móvil y a la
+              derecha en lo demás (ver arriba). */}
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Typography variant="subtitle2" component="p" sx={{ fontWeight: 700, lineHeight: 1.3 }} noWrap>
+            <Typography
+              variant="caption"
+              component="p"
+              color="primary"
+              sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 700, letterSpacing: '0.04em', lineHeight: 1.3 }}
+              noWrap
+            >
+              AMPA Sainz de Vicuña
+            </Typography>
+            <Typography variant="subtitle2" component="p" sx={{ fontWeight: 700, lineHeight: 1.3, fontSize: { sm: '1rem' } }} noWrap>
               {name}
             </Typography>
-            <Typography variant="caption" color="text.secondary" component="p" sx={{ lineHeight: 1.3 }} noWrap>
+            <Typography variant="caption" color="text.secondary" component="p" sx={{ display: { sm: 'none' }, lineHeight: 1.3 }} noWrap>
               {userName ?? ' '}
             </Typography>
           </Box>
+          {userName && (
+            <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' }, mr: 0.5 }} noWrap>
+              {userName}
+            </Typography>
+          )}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: -1.5 }}>
             {/* La ayuda la sirve el portal y solo a quien ha entrado: sin sesión (cargando, error) no sale. */}
             {sessionUser !== null && <HelpButton portalUrl={portalUrl} applications={applications} />}

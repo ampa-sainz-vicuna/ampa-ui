@@ -24,6 +24,12 @@ import { CLICK_TO_CHOOSE } from './clickToChoose.ts'
  * escribir, avisos con un borde de su color, menús y globos de ayuda
  * redondeados, la barra translúcida y un velo azul difuminado detrás de los
  * diálogos. Todo desde aquí, para que cambien a la vez todas las aplicaciones.
+ *
+ * Desde la 0.2.14, algo más de color «sin entusiasmarse» (pedido por el
+ * usuario el 21/10/2026, para quien trabaja horas con la junta de familias):
+ * un fondo un punto más cálido con velos del rojo del AMPA, la pestaña
+ * elegida con un fondo rojo muy suave y la cabecera de las tablas teñida del
+ * azul. Los colores que dicen algo (estados) y los de sección, en tones.ts.
  */
 export const BRAND_RED = '#E22333'
 export const BRAND_NAVY = '#424C76'
@@ -62,9 +68,9 @@ export const theme = createTheme({
     // Blanco sobre este rojo da un contraste de 4,6:1: pasa el mínimo WCAG AA (4,5).
     primary: { main: BRAND_RED },
     secondary: { main: BRAND_NAVY },
-    // Un gris con un punto de azul: las tarjetas blancas destacan más que
-    // sobre el gris neutro.
-    background: { default: '#F3F4F8', paper: '#FFFFFF' },
+    // Un gris con un punto de rojo (antes de la 0.2.14, de azul): las
+    // tarjetas blancas destacan y la casa se nota más cálida.
+    background: { default: '#F6F3F5', paper: '#FFFFFF' },
     text: { primary: INK, secondary: alpha(INK, 0.66) },
     divider: HAIRLINE,
   },
@@ -91,11 +97,14 @@ export const theme = createTheme({
         // más larga. Venía del index.css de facturación.
         html: { scrollbarGutter: 'stable' },
         body: {
-          // Un halo muy suave de los dos colores de la marca arriba del todo,
-          // detrás de la barra: da profundidad sin que se note que está.
+          // Velos suaves de los dos colores de la marca: rojo arriba a la
+          // izquierda (desde la 0.2.14, más presente) y abajo a la derecha,
+          // azul arriba a la derecha. Sin `fixed`: en el Safari del iPhone un
+          // fondo fijo con degradados se ve a saltos.
           backgroundImage: [
-            `radial-gradient(1100px 380px at 10% -140px, ${alpha(BRAND_RED, 0.09)}, transparent 70%)`,
-            `radial-gradient(1100px 380px at 90% -140px, ${alpha(BRAND_NAVY, 0.12)}, transparent 70%)`,
+            `radial-gradient(1200px 520px at 8% -160px, ${alpha(BRAND_RED, 0.16)}, transparent 70%)`,
+            `radial-gradient(900px 420px at 100% 110%, ${alpha(BRAND_RED, 0.07)}, transparent 70%)`,
+            `radial-gradient(1100px 380px at 92% -140px, ${alpha(BRAND_NAVY, 0.1)}, transparent 70%)`,
           ].join(', '),
           backgroundRepeat: 'no-repeat',
         },
@@ -197,7 +206,10 @@ export const theme = createTheme({
           fontWeight: 500,
           minHeight: 48,
           transition: 'color 150ms',
+          borderRadius: '10px 10px 0 0',
           '&:not(.Mui-selected):hover': { color: theme.palette.text.primary },
+          // La elegida, además de la raya roja, con un fondo rojo muy suave (0.2.14).
+          '&.Mui-selected': { backgroundColor: alpha(BRAND_RED, 0.06) },
         }),
       },
     },
@@ -249,6 +261,15 @@ export const theme = createTheme({
         standard: ({ theme, ownerState }) => ({
           border: `1px solid ${alpha(theme.palette[ownerState.severity ?? 'success'].main, 0.25)}`,
         }),
+      },
+    },
+    // La cabecera de las tablas, teñida del azul de la marca (0.2.14): se
+    // separa de las filas sin raya gruesa. Como imagen y no como color de
+    // fondo: la primera columna fija de DataTable pone su fondo blanco y el
+    // tinte queda encima, igual que en las demás.
+    MuiTableCell: {
+      styleOverrides: {
+        head: { backgroundImage: `linear-gradient(${alpha(BRAND_NAVY, 0.04)}, ${alpha(BRAND_NAVY, 0.04)})` },
       },
     },
     MuiChip: {
