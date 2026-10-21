@@ -67,27 +67,26 @@ lockfile. Sin credenciales ni `git` en ningún sitio.
 
 ## Estado
 
-Publicada la **0.2.13** (09/10/2026; commit `c7d708d`, etiqueta `v0.2.13`,
-release con su `.tgz`; solo añade): el clic que abre un desplegable ya no
-elige una opción (`src/brand/clickToChoose.ts`, en el tema como
-`MuiMenu.defaultProps`). Antes, la **0.2.12**: icono y «Familias». La
-**0.2.11** (`dc400ee`): **`DataTable`** (`src/table/`), tabla común
-con búsqueda sin tildes, orden, un filtro por columna `filterable`, «N de M»,
-ranura `toolbar`, `hideBelow`, primera columna fija en móvil, `onRowClick` y
-**«Exportar a Excel»** (`exportXlsx`). Columnas: text, number, money
-(céntimos), date. También exporta `formatCell` y `normalizeForSearch`. 109
-tests, lint, tipos, build y audit en verde. README: «La tabla común».
-**Quién usa qué** (09/10/2026): **todas** las aplicaciones están en la 0.2.13.
-**Comprobado por el usuario el 11/10/2026**: los desplegables abren a la
-primera en las aplicaciones.
-Las versiones anteriores, en el historial.
+Publicada la **0.2.14** (21/10/2026; commit `88e87b6`, etiqueta `v0.2.14`, release
+con su `.tgz`; solo añade): colores de estado (`Tone`, `StatusChip`, `StatTile`),
+`PageHeader`, `SectionIcon`, barra con «AMPA Sainz de Vicuña» y `DataTable` con
+`mutedRow`. 123 tests, lint, tipos y build en verde. Detalle en
+[docs/historial.md](docs/historial.md); la 0.2.13 y anteriores, también ahí.
+**Quién usa qué** (21/10/2026): `ampa-familias` en la 0.2.14; las demás, en la
+0.2.13. Pueden subir cuando quieran: sin cambios obligatorios (solo verán la barra
+y el fondo nuevos).
 
 **Pendiente**:
+- **Subir `vite`** (`audit` avisa de 8.3.0-8.3.2; solo desarrollo, no va en el
+  paquete). De Claude, en otra sesión.
+- **Adoptar `StatusChip` y `PageHeader`** en las demás aplicaciones: cuando el
+  usuario lo pida (skill `subir-dependencia`).
 - **Adoptar `DataTable`** (de Claude, en otra sesión, cuando el usuario lo
   pida; skill `subir-dependencia`): primero los apuntes del mes de
   facturación (`entries/MonthEntries.tsx`), luego el catálogo de listados
   (`CatalogPage`).
-- **Probarla en pantalla** (del usuario): nadie la ha visto aún en navegador.
+- **Probarla en pantalla** (del usuario): `DataTable` y los colores nuevos, en
+  `ampa-familias`; nadie los ha visto aún en navegador.
 
 ## Trampas vigentes
 
@@ -117,3 +116,8 @@ Las versiones anteriores, en el historial.
 - **Un `file:` en el `package.json` de una aplicación rompe su despliegue**:
   Cloud Build solo recibe la carpeta de la aplicación, no esta. (Para probar
   en local un `.tgz` sin publicar, README, *Probar un cambio…*.)
+
+- **`background-attachment: fixed` en Safari de iPhone da saltos**: los velos del
+  tema van sin él. No lo vuelvas a poner.
+- **`AppShell`: el nombre de quien ha entrado sale dos veces en el DOM** (a la
+  derecha en `sm` y arriba, en móvil). En tests, `getAllByText`, no `getByText`.

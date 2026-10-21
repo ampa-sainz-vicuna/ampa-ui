@@ -5,6 +5,46 @@ resumido allí.
 
 ---
 
+## 0.2.14, publicada (21/10/2026): colores que indican cosas y «AMPA Sainz de Vicuña» en la barra
+
+Commit `88e87b6`, etiqueta `v0.2.14`. La Action «Publicar versión» terminó bien y
+la release tiene su `.tgz`. Solo añade: sube la tercera cifra. Tests: 123 en
+verde; lint, tipos y build en verde. `audit` avisa de vite 8.3.0-8.3.2 (solo
+desarrollo, no va en el paquete): pendiente.
+
+- **Por qué**: la junta de familias necesitaba «colores que indiquen cosas» (un
+  estado se ve de un vistazo) sin recargar la pantalla, con un toque del rojo del
+  AMPA para que se note que es el AMPA Sainz de Vicuña. El usuario decidió que
+  esos colores vivan en `@ampa/ui` para toda la suite, no en una aplicación.
+- **Qué**:
+  - `src/brand/tones.ts`: `Tone` (`success`, `warning`, `error`, `info`,
+    `neutral`) y `toneColors`, con texto que pasa AA (el naranja, oscurecido). Y
+    `ACCENTS`: diez colores de sección, por nombre.
+  - `StatusChip`: etiqueta de estado suave.
+  - `StatTile`: recuadro que filtra. `onClick` es obligatorio; lleva
+    `aria-pressed` y `aria-label` del tipo «12 Con deuda, detalle».
+  - `PageHeader`: `h1` con un icono en círculo del color de la sección, sobre un
+    velo rojo suave.
+  - `SectionIcon`: icono de pestaña.
+  - Tema: fondo `#F6F3F5`; velos rojos **sin `background-attachment: fixed`**
+    (en Safari de iPhone la imagen da saltos al hacer scroll); la pestaña elegida
+    tiene fondo rojo suave; la cabecera de tabla va teñida de azul, como
+    `backgroundImage`, para que la primera columna fija de `DataTable` no la tape.
+  - `AppShell`: logo algo mayor y «AMPA Sainz de Vicuña» en rojo encima del nombre
+    de la aplicación desde `sm`. Quien ha entrado pasa a la derecha; en móvil sigue
+    debajo. Por eso el nombre sale dos veces en el DOM y cambiaron dos tests.
+  - `DataTable`: prop `mutedRow` (texto gris, sin `opacity` en los hijos, para no
+    apagar las etiquetas).
+  - README: tabla «Qué hay dentro» actualizada.
+- **Quién la usa**: `ampa-familias` ya en la 0.2.14 (desplegada, revisión
+  `ampa-familias-00046-9l8`). Las demás siguen en la 0.2.13 y pueden subir cuando
+  quieran (skill `subir-dependencia`). Sin cambios obligatorios: solo verán la
+  barra y el fondo nuevos.
+- **Queda**: subir vite (audit) y, si el usuario quiere, que las demás
+  aplicaciones adopten `StatusChip` y `PageHeader`.
+
+---
+
 ## 11/10/2026: desplegables comprobados
 
 El usuario confirma que, con la 0.2.13, los desplegables abren a la primera en
